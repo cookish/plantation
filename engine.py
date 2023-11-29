@@ -208,8 +208,28 @@ def main():
     board = np.zeros((num_rows, num_cols), dtype=int)
     board[1][1] = 1
     board[4][4] = -1
-    player_handler_p = RandomPlayer(1)
-    player_handler_m = RandomPlayerPlus(-1)
+    probs_p = {
+        'fertilise': 0.3,
+        'plant': 0.5,
+        'colonise': 0.1,
+        'spray': 0.05,
+        'bomb': 0.05
+    }
+    # probs_m = {
+    #     'fertilise': 0.1,
+    #     'plant': 0.2,
+    #     'colonise': 0.05,
+    #     'spray': 0.4,
+    #     'bomb': 0.25
+    # }
+    probs_m = {
+        'plant': 0.1,
+        'fertilise': 0.1,
+        'spray': 0.7,
+        'bomb': 0.1
+    }
+    player_handler_p = RandomPlayerPlus(1, probs_p)
+    player_handler_m = RandomPlayerPlus(-1, probs_m)
     run_game(player_handler_p, player_handler_m, board)
     score_board(board)
 
