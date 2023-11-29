@@ -1,4 +1,5 @@
 from typing import Tuple, List
+import numpy as np
 
 
 class Player:
@@ -6,14 +7,12 @@ class Player:
     num_cols = 0
     player = 0
 
-    def __init__(self, num_rows: int, num_cols: int, player: int):
-        self.num_rows = num_rows
-        self.num_cols = num_cols
+    def __init__(self, player: int):
         self.player = player
 
     def get_move(
             self,
-            board: List[List[int]],
+            board: np.array,
             moves_remaining: int
     ) -> Tuple[str, List[int]]:
 

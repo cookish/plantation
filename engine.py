@@ -1,11 +1,12 @@
+from player import Player
 from random_player import RandomPlayer
 from random_player_plus import RandomPlayerPlus
 from typing import List
 from include import get_player_restricted_board
+import numpy as np
 
-num_rows = 6
+num_rows = 8
 num_cols = 6
-board = [[0 for i in range(num_cols)] for j in range(num_rows)]
 max_turns = 100
 
 moves_required = {
@@ -17,7 +18,7 @@ moves_required = {
 }
 
 
-def run_game(player_handler_p, player_handler_m):
+def run_game(player_handler_p, player_handler_m, board):
 
     turn = 0
     while turn < max_turns:
@@ -34,7 +35,7 @@ def run_game(player_handler_p, player_handler_m):
     print_board(board)
 
 
-def score_game():
+def score_board(board):
     total_p = 0
     total_m = 0
     for row in range(num_rows):
@@ -54,7 +55,7 @@ def score_game():
         print("It's a draw!")
 
 
-def run_turn(player, player_handler, board):
+def run_turn(player: int, player_handler: Player, board: np.array):
     print_board(board)
     moves_remaining = 3
     name = "Plus" if player == 1 else "Minus"
@@ -63,13 +64,13 @@ def run_turn(player, player_handler, board):
         player_board = get_player_restricted_board(board, player)
         move, pos = player_handler.get_move(player_board, moves_remaining)
         print(f"Move: {move} ({','.join([str(p) for p in pos])})")
-        result = do_move(move, pos, player, moves_remaining)
+        result = do_move(move, pos, player, moves_remaining, board)
         print(f"Result: {result}")
         player_handler.handle_move_result(move, pos, result)
         moves_remaining -= moves_required[move]
 
 
-def do_fertilise(pos: List[int], player: int) -> str:
+def do_fertilise(pos: List[int], player: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
     if player * board[row][col] > 0:
@@ -80,7 +81,7 @@ def do_fertilise(pos: List[int], player: int) -> str:
         return "error"
 
 
-def do_plant(pos: List[int], player: int) -> str:
+def do_plant(pos: List[int], player: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
     if board[row][col] * player > 0:
@@ -100,7 +101,7 @@ def do_plant(pos: List[int], player: int) -> str:
     return "error"
 
 
-def do_scout(pos: List[int], _player: int) -> str:
+def do_scout(pos: List[int], _player: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
     results = []
@@ -111,7 +112,7 @@ def do_scout(pos: List[int], _player: int) -> str:
     return "OK " + ",".join([str(x) for x in results])
 
 
-def do_colonise(pos: List[int], player: int) -> str:
+def do_colonise(pos: List[int], player: int, board: np.array) -> str:
 
     row, col, source_row, source_col = pos[0], pos[1], pos[2], pos[3]
     if board[row][col] * player > 0:
@@ -129,7 +130,7 @@ def do_colonise(pos: List[int], player: int) -> str:
         return "OK"
 
 
-def do_spray(pos: List[int], player: int) -> str:
+def do_spray(pos: List[int], player: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
     total = 0
@@ -141,7 +142,7 @@ def do_spray(pos: List[int], player: int) -> str:
     return f"OK {total}"
 
 
-def do_bomb(pos: List[int], player: int) -> str:
+def do_bomb(pos: List[int], player: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
     if board[row][col] * player > 0:
@@ -154,7 +155,13 @@ def do_bomb(pos: List[int], player: int) -> str:
         return f"OK {levels_reduced}"
 
 
-def do_move(move: str, pos: List[int], player: int, moves_remaining: int):
+def do_move(
+        move: str,
+        pos: List[int],
+        player: int,
+        moves_remaining: int,
+        board: np.array
+):
     if len(pos) < 2:
         print(f"Invalid position: {pos}")
         return "error"
@@ -170,17 +177,17 @@ def do_move(move: str, pos: List[int], player: int, moves_remaining: int):
         return "error"
 
     if move == 'fertilise':
-        return do_fertilise(pos, player)
+        return do_fertilise(pos, player, board)
     elif move == 'plant':
-        return do_plant(pos, player)
+        return do_plant(pos, player, board)
     elif move == 'scout':
-        return do_scout(pos, player)
+        return do_scout(pos, player, board)
     elif move == 'colonise':
-        return do_colonise(pos, player)
+        return do_colonise(pos, player, board)
     elif move == 'spray':
-        return do_spray(pos, player)
+        return do_spray(pos, player, board)
     else:  # move == 'bomb':
-        return do_bomb(pos, player)
+        return do_bomb(pos, player, board)
 
 
 def print_board(board):
@@ -206,13 +213,13 @@ def print_board(board):
 
 
 def main():
-
+    board = np.zeros((num_rows, num_cols), dtype=int)
     board[1][1] = 1
     board[4][4] = -1
-    player_handler_p = RandomPlayerPlus(num_rows, num_cols, 1)
-    player_handler_m = RandomPlayer(num_rows, num_cols, -1)
-    run_game(player_handler_p, player_handler_m)
-    score_game()
+    player_handler_p = RandomPlayer(1)
+    player_handler_m = RandomPlayerPlus(-1)
+    run_game(player_handler_p, player_handler_m, board)
+    score_board(board)
 
 
 if __name__ == "__main__":
