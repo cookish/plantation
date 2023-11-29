@@ -1,13 +1,12 @@
 from player import Player
-from random_player import RandomPlayer
 from random_player_plus import RandomPlayerPlus
 from typing import List
 from include import get_player_restricted_board
 import numpy as np
 
-num_rows = 8
-num_cols = 6
-max_turns = 100
+num_rows = 11
+num_cols = 11
+max_turns = 500
 
 moves_required = {
     'fertilise': 1,
@@ -36,15 +35,8 @@ def run_game(player_handler_p, player_handler_m, board):
 
 
 def score_board(board):
-    total_p = 0
-    total_m = 0
-    for row in range(num_rows):
-        for col in range(num_cols):
-            if board[row][col] > 0:
-                total_p += board[row][col]
-            elif board[row][col] < 0:
-                total_m -= board[row][col]
-
+    total_m = abs(np.sum(board[board < 0]))
+    total_p = np.sum(board[board > 0])
     print(f"Total for Plus: {total_p}")
     print(f"Total for Minus: {total_m}")
     if total_p > total_m:
