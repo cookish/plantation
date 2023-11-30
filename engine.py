@@ -20,10 +20,13 @@ moves_required = {
 }
 
 
-def run_game(player_handler_p, player_handler_m, board):
+def run_game(
+        player_handler_p: Player,
+        player_handler_m: Player,
+        board: np.array
+) -> None:
 
-    turn = 0
-    while turn < max_turns:
+    for turn in range(1, max_turns+1):
         print()
         print("---------------------------------------------------------------")
         print(f"Turn {turn}")
@@ -31,7 +34,6 @@ def run_game(player_handler_p, player_handler_m, board):
         run_turn(1, player_handler_p, board)
         print()
         run_turn(-1, player_handler_m, board)
-        turn += 1
 
     print("Game over")
     print_board(board)
@@ -48,8 +50,11 @@ def initialise_board(board: np.array):
 def score_board(board):
     total_m = abs(np.sum(board[board < 0]))
     total_p = np.sum(board[board > 0])
-    print(f"Total for Plus: {total_p}")
-    print(f"Total for Minus: {total_m}")
+
+    print()
+    print("================ Final score ================")
+    print(f"Plus: {total_p}")
+    print(f"Minus: {total_m}")
     if total_p > total_m:
         print(f"Plus wins by {total_p - total_m} points!")
     elif total_p < total_m:
@@ -66,9 +71,9 @@ def run_turn(player: int, player_handler: Player, board: np.array):
     while moves_remaining > 0:
         player_board = get_player_restricted_board(board, player)
         move, pos = player_handler.get_move(player_board, moves_remaining)
-        print(f"Move: {move} ({','.join([str(p) for p in pos])})")
         result = do_move(move, pos, player, moves_remaining, board)
-        print(f"Result: {result}")
+        move_str = f"{move} ({','.join([str(p) for p in pos])})"
+        print(f"{move_str:<20}  |  {result}")
         player_handler.handle_move_result(move, pos, result)
         moves_remaining -= moves_required[move]
 
@@ -194,6 +199,9 @@ def do_move(
 
 
 def print_board(board):
+    total_p = np.sum(board[board > 0])
+    total_m = np.sum(board[board < 0])
+    print(f"Score: {total_p:+}, {total_m:+}  ({total_p + total_m:+})")
     print("     " + "    ".join([str(i) for i in range(num_cols)]))
     print("   " + "=" * (num_cols * 5 + 1))
     for row in range(num_rows):
