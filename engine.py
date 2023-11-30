@@ -3,10 +3,13 @@ from random_player_plus import RandomPlayerPlus
 from typing import List
 from include import get_player_restricted_board
 import numpy as np
+import random
 
 num_rows = 11
 num_cols = 11
-max_turns = 500
+max_turns = 100
+bomb_damage = 4
+starting_tiles = 3
 
 moves_required = {
     'fertilise': 1,
@@ -32,6 +35,14 @@ def run_game(player_handler_p, player_handler_m, board):
 
     print("Game over")
     print_board(board)
+
+
+def initialise_board(board: np.array):
+    random_rows = random.sample(range(board.shape[0]), starting_tiles)
+    board[random_rows, 0] = 1
+
+    random_rows = random.sample(range(board.shape[0]), starting_tiles)
+    board[random_rows, -1] = -1
 
 
 def score_board(board):
@@ -142,7 +153,7 @@ def do_bomb(pos: List[int], player: int, board: np.array) -> str:
         print(f"do_bomb: target tile owned by player")
         return "error"
     else:
-        levels_reduced = min(abs(board[row][col]), 3)
+        levels_reduced = min(abs(board[row][col]), bomb_damage)
         board[row][col] += player * levels_reduced
         return f"OK {levels_reduced}"
 
@@ -206,8 +217,8 @@ def print_board(board):
 
 def main():
     board = np.zeros((num_rows, num_cols), dtype=int)
-    board[1][1] = 1
-    board[4][4] = -1
+    initialise_board(board)
+
     probs_p = {
         'fertilise': 0.3,
         'plant': 0.5,
