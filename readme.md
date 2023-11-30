@@ -106,9 +106,15 @@ Return: ```OK #``` or ```error``` (# is the number of plantation levels reduced)
 
 Affects a single tile. If your opponent has planted the tile, it reduces their plantation level by up to 3 levels. Returns the number of plantation levels reduced.
 
-# Building an AI agent
+# Building an AI player
 
-Extend the ```Player``` class and implement the ```get_move``` and 
-```handle_move_result``` methods. 
+Create a file in the AI_players folder that extends the ```Player``` class 
+and implement the ```get_move``` method and optionally the ```handle_move_result```
+method if you want to learn from the return values of your moves. 
 
-There are example AI agents in random_player.py and random_player_plus.py.
+There are two example AI agents in random_player.py and random_player_plus.py.
+
+RandomPlayer is very dumb, and makes lots of moves that lead to errors.
+
+RandomPlayerPlus is a bit smarter. Each turn it makes a random choice of valid 
+moves, with optional weightings for the random choice.
