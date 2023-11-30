@@ -1,6 +1,6 @@
 from player import Player
-from ai_players.random_player_plus import RandomPlayerPlus
 from ai_players.random_player import RandomPlayer
+from ai_players.random_player_dumb import RandomPlayerDumb
 from typing import List
 from include import get_player_restricted_board
 import numpy as np
@@ -235,8 +235,8 @@ def main():
         'spray': 0.05,
         'bomb': 0.05
     }
-    player_handler_p = RandomPlayerPlus(1, probs_p)
-    player_handler_m = RandomPlayer(-1)
+    player_handler_p = RandomPlayer(1, probs_p)
+    player_handler_m = RandomPlayerDumb(-1)
     run_game(player_handler_p, player_handler_m, board)
     score_board(board)
 

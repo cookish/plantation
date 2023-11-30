@@ -16,7 +16,7 @@ but "plant", "colonise", "spray" and "bomb" can also yield some information.
 Scores for Plus are represented by positive numbers, scores for Minus by negative.
 Plus starts off with three randomly selected tiles in the left-most column with
 a score of +1. Similarly, Minus starts off with three random tiles in the right-most
-column.
+column with -1.
 
 Plus moves first, then each player alternates turns with three moves per turn. The
 game ends after each player has had 100 turns, where the winner is decided by 
@@ -27,24 +27,22 @@ Example board:
 ```
      0    1    2    3    4    5    6    7    8    9    10
    ========================================================
- 0 | +1 |    |    |    |    |    |    |    |    |    |    |
- 1 | +1 | +3 | +2 | +1 |    |    |    |    |    |    |    |
- 2 | +2 | +1 |    |    |    |    |    |    |    |    |    |
- 3 |    |    |    |    |    |    |    |    |    |    |    |
- 4 |    |    | -1 | -2 | -1 | -1 | +1 |    |    |    |    |
- 5 |    |    |    |    | -1 |    |    |    |    |    |    |
- 6 |    |    |    |    |    |    |    |    |    |    |    |
+ 0 |    |    |    |    |    |    |    |    |    |    |    |
+ 1 |    |    |    |    |    |    |    |    |    |    | -1 |
+ 2 |    |    |    | +1 |    |    |    |    |    |    |    |
+ 3 | +1 |    |    |    |    |    |    |    |    |    |    |
+ 4 |    |    |    |    |    |    |    |    |    |    |    |
+ 5 |    |    |    |    |    |    |    |    |    | -1 | -1 |
+ 6 | +1 |    |    |    |    |    |    |    |    |    |    |
  7 |    |    |    |    |    |    |    |    |    |    |    |
  8 |    |    |    |    |    |    |    |    |    |    |    |
- 9 |    |    |    |    |    |    |    |    |    |    |    |
-10 |    |    |    |    |    |    |    |    |    |    |    |
+ 9 | +1 |    |    |    |    |    |    |    |    |    |    |
+10 |    |    |    |    |    |    |    |    |    | -1 | -2 |
    ========================================================
-```
-Plus owns tiles (0, 0), (1, 0), (1, 1), (1, 2), (1, 3), (2, 0), (2, 1) and (4, 6),
-with a total score of 11. 
+ ```
+Plus owns tiles (2, 3), (3, 0), (6, 0), and (9, 0) with a total score of +4. 
 
-Minus owns tiles (4, 2), (4, 3), (4, 4), (4, 5), and (5, 4) with a total score of 6.
-
+Minus owns tiles (1, 10), (5, 9), (5, 10), (5,9) and (10, 10) with a total score of -6.
 
 # Command details
 
@@ -112,9 +110,13 @@ Create a file in the AI_players folder that extends the ```Player``` class
 and implement the ```get_move``` method and optionally the ```handle_move_result```
 method if you want to learn from the return values of your moves. 
 
-There are two example AI agents in random_player.py and random_player_plus.py.
+There are two example AI agents in random_player.py and random_player_dumb.py.
 
-RandomPlayer is very dumb, and makes lots of moves that lead to errors.
+RandomPlayerDumb randomly makes random moves, but doesn't check if they are valid
+first, so gets lots of errors.
 
-RandomPlayerPlus is a bit smarter. Each turn it makes a random choice of valid 
-moves, with optional weightings for the random choice.
+RandomPlayer makes a weighted random choice of valid moves each turn.
+
+# Todo
+- Make a chess clock
+- Make two modes, one for single game, one for bulk running games
