@@ -10,7 +10,7 @@ import engine
 def main():
     name_a = "Duke Nukem"
     name_b = "Grower"
-    num_games = 100
+    num_games = 1000
     player_a = RandomPlayer(
         sign=1,
         move_probabilities={
@@ -42,7 +42,12 @@ def main():
         'draw': []
     }
 
+    print("Running games: [", end="")
     for game in range(num_games):
+        # print progress bar
+        if game % (num_games // 20) == 0:
+            print("=", end="")
+
         player_a.set_sign(1)
         player_b.set_sign(-1)
 
@@ -65,6 +70,7 @@ def main():
 
         player_a, player_b = player_b, player_a
 
+    print("]")
     scores = wins[player_a.name] + [-x for x in wins[player_b.name]]
     print(f"{player_a.name} wins: {len(wins[player_a.name])}  "
           f"{wins[player_a.name]}")
