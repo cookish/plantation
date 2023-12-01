@@ -50,6 +50,7 @@ Player 2 owns tiles (1, 10), (5, 9), (5, 10), (5,9) and (10, 10) with a total sc
 
 If you do not have enough moves remaining for a command that requires more than one move, "error" is returned.
 
+--- 
 #### ```fertilise [row, col]```
  
 Moves: 1  
@@ -59,6 +60,7 @@ Increases the score of one of your tiles 1.
 
 If you do not control the tile, "error" is returned.
 
+--- 
 #### ```plant [row, col]``` 
 Moves: 1  
 Return: ```OK```, ```error``` or ```occupied #```  (if occupied, # is the score of the opponent's tile)
@@ -70,12 +72,14 @@ If it is empty, you gain control of that tile with a plantation count of 1.
 already owned by your opponent, nothing happens and "occupied" is returned 
 together with the opponent's score in the tile. 
 
+--- 
 #### ```scout [row, col]```
 Moves: 1  
 Return: ```OK a,b,c,d,e,f,g,h,i``` or ```error```    
 
 a-i are the values of the 3x3 grid centred around the target tile.
 
+--- 
 #### ```colonise  [target_row, target_col, source_row, source_col]```  
 Moves: 2  
 Return: ```OK```, ```error``` or ```occupied #```  (if occupied, # is the score of the opponent's tile)  
@@ -90,7 +94,7 @@ If the target tile is empty, you gain control of that tile with a plantation cou
 already owned by your opponent, nothing happens and "occupied" is returned 
 together with the opponent's score in the tile.
 
-
+--- 
 #### ```spray [row, col]```  
 Moves: 2  
 Return: ```OK #``` or ```error```  (# is the number of opponent's tiles affected)
@@ -99,7 +103,7 @@ Affects a cross-shape including the target and the tiles above, below, left and 
 
 For each tile affected, if your opponent has planted that tile, their count is reduced by 1. If it is reduced to 0, they lose control of that tile. Returns the total number of tiles affected.
 
-
+--- 
 #### ```bomb [row, col]```  
 Moves: 2  
 Return: ```OK #``` or ```error``` (# is the number of plantation levels reduced)
