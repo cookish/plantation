@@ -1,16 +1,8 @@
 from player import Player
-from ai_players.random_player import RandomPlayer
-from ai_players.random_player_dumb import RandomPlayerDumb
 from typing import List
 from include import get_player_restricted_board
 import numpy as np
 import random
-
-num_rows = 11
-num_cols = 11
-max_turns = 100
-bomb_damage = 4
-starting_tiles = 3
 
 moves_required = {
     'fertilise': 1,
@@ -19,14 +11,20 @@ moves_required = {
     'spray': 2,
     'bomb': 2
 }
+bomb_damage = 4
 
 
 def run_game(
         player_handler_p: Player,
         player_handler_m: Player,
-        board: np.array
-) -> None:
+        num_rows: int,
+        num_cols: int,
+        max_turns: int,
+        starting_tiles: int
+) -> np.array:
 
+    board = np.zeros((num_rows, num_cols), dtype=int)
+    initialise_board(board, starting_tiles)
     for turn in range(1, max_turns+1):
         print()
         print("---------------------------------------------------------------")
@@ -36,11 +34,11 @@ def run_game(
         print()
         run_turn(-1, player_handler_m, board)
 
-    print("Game over")
-    print_board(board)
+    print("********** Game over! **********")
+    return board
 
 
-def initialise_board(board: np.array):
+def initialise_board(board: np.array, starting_tiles: int) -> None:
     random_rows = random.sample(range(board.shape[0]), starting_tiles)
     board[random_rows, 0] = 1
 
@@ -49,19 +47,20 @@ def initialise_board(board: np.array):
 
 
 def score_board(board):
-    total_m = abs(np.sum(board[board < 0]))
+    total_m = np.sum(board[board < 0])
     total_p = np.sum(board[board > 0])
+    final_score = total_p + total_m
 
     print()
     print("================ Final score ================")
-    print(f"Plus: {total_p}")
-    print(f"Minus: {total_m}")
-    if total_p > total_m:
-        print(f"Plus wins by {total_p - total_m} points!")
-    elif total_p < total_m:
-        print(f"Minus wins by {total_m - total_p} points!")
-    else:
+    print(f"Plus: {total_p:+}")
+    print(f"Minus: {total_m:+}")
+    if final_score == 0:
         print("It's a draw!")
+    else:
+        print(f"{'Plus' if final_score > 0 else 'Minus'} "
+              f"wins by {abs(final_score)} points!")
+    return final_score
 
 
 def run_turn(player: int, player_handler: Player, board: np.array):
@@ -101,7 +100,9 @@ def do_plant(pos: List[int], player: int, board: np.array) -> str:
 
     # now we know that board[row][col] == 0
     for delta_r, delta_c in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-        if 0 <= row + delta_r < num_rows and 0 <= col + delta_c < num_cols:
+        test_row = row + delta_r
+        test_col = col + delta_c
+        if 0 <= test_row < board.shape[0] and 0 <= test_col < board.shape[1]:
             if board[row + delta_r][col + delta_c] * player > 0:
                 board[row][col] = player
                 return "OK"
@@ -116,7 +117,10 @@ def do_scout(pos: List[int], _player: int, board: np.array) -> str:
     results = []
     for delta_c in (-1, 0, 1):
         for delta_r in (-1, 0, 1):
-            if 0 <= row + delta_r < num_rows and 0 <= col + delta_c < num_cols:
+            test_row = row + delta_r
+            test_col = col + delta_c
+            if 0 <= test_row < board.shape[0] \
+                    and 0 <= test_col < board.shape[1]:
                 results.append(board[row + delta_r][col + delta_c])
     return "OK " + ",".join([str(x) for x in results])
 
@@ -144,8 +148,10 @@ def do_spray(pos: List[int], player: int, board: np.array) -> str:
     row, col = pos[0], pos[1]
     total = 0
     for delta_r, delta_c in [(-1, 0), (1, 0), (0, -1), (0, 1), (0, 0)]:
-        if 0 <= row + delta_r < num_rows and 0 <= col + delta_c < num_cols:
-            if board[row + delta_r][col + delta_c] * player < 0:
+        test_row = row + delta_r
+        test_col = col + delta_c
+        if 0 <= test_row < board.shape[0] and 0 <= test_col < board.shape[1]:
+            if board[test_row][test_col] * player < 0:
                 board[row + delta_r][col + delta_c] += player
                 total += 1
     return f"OK {total}"
@@ -175,7 +181,7 @@ def do_move(
         print(f"Invalid position: {pos}")
         return "error"
     row, col = pos[0], pos[1]
-    if row < 0 or row >= num_rows or col < 0 or col >= num_cols:
+    if row < 0 or row >= board.shape[0] or col < 0 or col >= board.shape[1]:
         print(f"Invalid location: ({row}, {col})")
         return "error"
     if move not in moves_required.keys():
@@ -200,6 +206,8 @@ def do_move(
 
 
 def print_board(board):
+    num_rows = board.shape[0]
+    num_cols = board.shape[1]
     total_p = np.sum(board[board > 0])
     total_m = np.sum(board[board < 0])
     print(f"Score: {total_p:+}, {total_m:+}  ({total_p + total_m:+})")
@@ -222,24 +230,3 @@ def print_board(board):
 
         print()
     print("   " + "=" * (num_cols * 5 + 1))
-
-
-def main():
-    board = np.zeros((num_rows, num_cols), dtype=int)
-    initialise_board(board)
-
-    probs_p = {
-        'fertilise': 0.3,
-        'plant': 0.5,
-        'colonise': 0.1,
-        'spray': 0.05,
-        'bomb': 0.05
-    }
-    player_handler_p = RandomPlayer(1, probs_p)
-    player_handler_m = RandomPlayerDumb(-1)
-    run_game(player_handler_p, player_handler_m, board)
-    score_board(board)
-
-
-if __name__ == "__main__":
-    main()
