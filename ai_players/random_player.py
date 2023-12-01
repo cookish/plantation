@@ -82,14 +82,12 @@ class RandomPlayer (Player):
                         row, col = random.choice(zero_tiles)
                         return move, [row, col, source_row, source_col]
 
-            elif move == 'spray':
-                row = random.randint(0, rows - 1)
-                col = random.randint(0, cols - 1)
-                return move, [row, col]
+            elif move in ('spray', 'bomb'):
+                # don't target one of our own squares
+                zero_tiles = np.argwhere(board == 0)
+                row, col = random.choice(zero_tiles)
+                if board[row][col] * self.sign == 0:
+                    return move, [row, col]
 
-            else:  # move == 'bomb':
-                for i in range(attempts):
-                    row = random.randint(0, rows - 1)
-                    col = random.randint(0, cols - 1)
-                    if board[row][col] * self.sign == 0:
-                        return move, [row, col]
+            else:
+                print("Unknown move: ", move)
