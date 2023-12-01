@@ -25,9 +25,9 @@ class RandomPlayer (Player):
     def get_move(
             self,
             board: np.array,
-            moves_remaining: int
+            moves_remaining: int,
+            time_remaining: float
     ) -> Tuple[str, List[int]]:
-
         attempts = 50
         rows = board.shape[0]
         cols = board.shape[1]

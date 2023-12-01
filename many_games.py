@@ -10,7 +10,7 @@ import engine
 def main():
     name_a = "Duke Nukem"
     name_b = "Grower"
-    num_games = 1000
+    num_games = 100
     player_a = RandomPlayer(
         sign=1,
         move_probabilities={
@@ -22,7 +22,7 @@ def main():
         },
         name=name_a
     )
-    # player_a = RandomPlayerDumb(1)
+    # player_a = RandomPlayerDumb(1, name="Dumb")
     player_b = RandomPlayer(
         sign=-1,
         move_probabilities={
@@ -51,22 +51,28 @@ def main():
         player_a.set_sign(1)
         player_b.set_sign(-1)
 
-        board = engine.run_game(
+        score = engine.run_game(
             player_handler_p=player_a,
             player_handler_m=player_b,
             num_rows=11,
             num_cols=11,
             max_turns=100,
-            starting_tiles=3
+            starting_tiles=3,
+            starting_seconds=1.0,
+            time_increment=0.1
         )
 
-        score = engine.score_board(board, player_a, player_b)
         if score > 0:
             wins[player_a.name].append(abs(score))
         elif score < 0:
             wins[player_b.name].append(abs(score))
         else:
             wins['draw'].append(0)
+
+        if score == 100:
+            print(player_b.name, "ran out of time")
+        elif score == -100:
+            print(player_a.name, "ran out of time")
 
         player_a, player_b = player_b, player_a
 

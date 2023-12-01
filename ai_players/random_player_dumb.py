@@ -11,6 +11,7 @@ class RandomPlayerDumb (Player):
             self,
             board: np.array,
             moves_remaining: int,
+            time_remaining: float
     ) -> Tuple[str, List[int]]:
 
         if moves_remaining > 1:

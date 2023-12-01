@@ -3,6 +3,7 @@ from typing import List
 from include import get_player_restricted_board
 import numpy as np
 import random
+import time
 
 moves_required = {
     'fertilise': 1,
@@ -21,22 +22,40 @@ def run_game(
         num_rows: int,
         num_cols: int,
         max_turns: int,
-        starting_tiles: int
-) -> np.array:
+        starting_tiles: int,
+        starting_seconds: float,
+        time_increment: float
+) -> float:
 
     board = np.zeros((num_rows, num_cols), dtype=int)
     initialise_board(board, starting_tiles)
+    time_p = starting_seconds
+    time_m = starting_seconds
     for turn in range(1, max_turns+1):
         vprint()
         vprint("--------------------------------------------------------------")
         vprint(f"Turn {turn}")
         vprint("=========")
-        run_turn(1, player_handler_p, board)
+        t = run_turn(1, player_handler_p, board, time_p)
+        time_p = time_p - t + time_increment
+        if time_p < 0:
+            break
         vprint()
-        run_turn(-1, player_handler_m, board)
+        t = run_turn(-1, player_handler_m, board, time_m)
+        time_m = time_m - t + time_increment
+        if time_m < 0:
+            break
 
     vprint("********** Game over! **********")
-    return board
+    if time_p < 0:
+        vprint(f"{player_handler_p.name} ran out of time!")
+        return -100
+    if time_m < 0:
+        vprint(f"{player_handler_m.name} ran out of time!")
+        return 100
+
+    else:
+        return score_board(board, player_handler_p, player_handler_m)
 
 
 def initialise_board(board: np.array, starting_tiles: int) -> None:
@@ -47,7 +66,7 @@ def initialise_board(board: np.array, starting_tiles: int) -> None:
     board[random_rows, -1] = -1
 
 
-def score_board(board, player_p: Player, player_m: Player):
+def score_board(board, player_p: Player, player_m: Player) -> float:
     total_m = np.sum(board[board < 0])
     total_p = np.sum(board[board > 0])
     final_score = total_p + total_m
@@ -64,20 +83,30 @@ def score_board(board, player_p: Player, player_m: Player):
     return final_score
 
 
-def run_turn(sign: int, player_handler: Player, board: np.array):
+def run_turn(
+        sign: int,
+        player_handler: Player,
+        board: np.array,
+        time_remaining: float
+) -> float:
     if verbose:
         print_board(board)
     moves_remaining = 3
-    name = "Plus" if sign == 1 else "Minus"
-    vprint(f"### {name} ###")
+
+    vprint(f"### {player_handler.name} ###  (time={time_remaining:.2f})")
+    time_taken = 0.
     while moves_remaining > 0:
         player_board = get_player_restricted_board(board, sign)
-        move, pos = player_handler.get_move(player_board, moves_remaining)
+        start_time = time.time()
+        move, pos = player_handler.get_move(
+            player_board, moves_remaining, time_remaining)
+        time_taken += time.time() - start_time
         result = do_move(move, pos, sign, moves_remaining, board)
         move_str = f"{move} ({','.join([str(p) for p in pos])})"
         vprint(f"{move_str:<20}  |  {result}")
         player_handler.handle_move_result(move, pos, result)
         moves_remaining -= moves_required[move]
+    return time_taken
 
 
 def do_fertilise(pos: List[int], sign: int, board: np.array) -> str:

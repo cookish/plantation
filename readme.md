@@ -116,6 +116,3 @@ RandomPlayerDumb randomly makes random moves, but doesn't check if they are vali
 first, so gets lots of errors.
 
 RandomPlayer makes a weighted random choice of valid moves each turn.
-
-# Todo
-- Make a chess clock

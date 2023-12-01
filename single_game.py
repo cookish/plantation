@@ -19,15 +19,16 @@ def main():
     player_handler_b = RandomPlayerDumb(-1, name="Dumb")
 
     engine.verbose = True
-    board = engine.run_game(
+    _score = engine.run_game(
         player_handler_a,
         player_handler_b,
         num_rows=11,
         num_cols=11,
         max_turns=10,
-        starting_tiles=3
+        starting_tiles=3,
+        starting_seconds=1.0,
+        time_increment=0.1
     )
-    _score = engine.score_board(board, player_handler_a, player_handler_b)
 
 
 if __name__ == '__main__':
