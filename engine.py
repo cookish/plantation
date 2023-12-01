@@ -47,20 +47,20 @@ def initialise_board(board: np.array, starting_tiles: int) -> None:
     board[random_rows, -1] = -1
 
 
-def score_board(board):
+def score_board(board, player_p: Player, player_m: Player):
     total_m = np.sum(board[board < 0])
     total_p = np.sum(board[board > 0])
     final_score = total_p + total_m
 
     vprint()
     vprint("================ Final score ================")
-    vprint(f"Plus: {total_p:+}")
-    vprint(f"Minus: {total_m:+}")
+    vprint(f"{player_p.name}: {total_p:+}")
+    vprint(f"{player_m.name}: {total_m:+}")
     if final_score == 0:
         vprint("It's a draw!")
     else:
-        vprint(f"{'Plus' if final_score > 0 else 'Minus'} "
-               f"wins by {abs(final_score)} points!")
+        winner = player_p.name if final_score > 0 else player_m.name
+        vprint(f"{winner} wins by {abs(final_score)} points!")
     return final_score
 
 

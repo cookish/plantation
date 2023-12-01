@@ -1,5 +1,5 @@
 from player import Player
-from typing import Tuple, List, Dict
+from typing import Tuple, List, Dict, Optional
 import random
 import numpy as np
 
@@ -8,9 +8,10 @@ class RandomPlayer (Player):
 
     def __init__(
             self, sign: int,
-            move_probabilities: Dict[str, float] = None
+            move_probabilities: Dict[str, float] = None,
+            name: Optional[str] = None
     ):
-        super().__init__(sign)
+        super().__init__(sign, name)
         if move_probabilities is None:
             self.move_probabilities = {
                 'fertilise': 0.2,

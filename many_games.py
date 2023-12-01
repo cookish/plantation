@@ -8,30 +8,40 @@ import engine
 
 
 def main():
-
-    num_games = 40
+    name_a = "Duke Nukem"
+    name_b = "Grower"
+    num_games = 100
     player_a = RandomPlayer(
-        1,
+        sign=1,
         move_probabilities={
-            'fertilise': 6,
-            'plant': 10,
+            'fertilise': 3,
+            'plant': 4,
             'colonise': 2,
-            'spray': 1,
-            'bomb': 1
-        })
+            'spray': 15,
+            'bomb': 8
+        },
+        name=name_a
+    )
     # player_a = RandomPlayerDumb(1)
     player_b = RandomPlayer(
-        -1,
+        sign=-1,
         move_probabilities={
             'fertilise': 10,
             'plant': 20,
-            'colonise': 1,
-            'spray': 5,
-            'bomb': 5
-        })
+            'colonise': 4,
+            'spray': 3,
+            'bomb': 2
+        },
+        name=name_b
+    )
 
     engine.verbose = False
-    scores = []
+    wins = {
+        player_a.name: [],
+        player_b.name: [],
+        'draw': []
+    }
+
     for game in range(num_games):
         player_a.set_sign(1)
         player_b.set_sign(-1)
@@ -45,15 +55,26 @@ def main():
             starting_tiles=3
         )
 
-        score = engine.score_board(board)
-        if game % 2 == 1:
-            score = -score
+        score = engine.score_board(board, player_a, player_b)
+        if score > 0:
+            wins[player_a.name].append(abs(score))
+        elif score < 0:
+            wins[player_b.name].append(abs(score))
+        else:
+            wins['draw'].append(0)
 
-        scores.append(score)
         player_a, player_b = player_b, player_a
 
+    scores = wins[player_a.name] + [-x for x in wins[player_b.name]]
+    print(f"{player_a.name} wins: {len(wins[player_a.name])}  "
+          f"{wins[player_a.name]}")
+    print(f"{player_b.name} wins: {len(wins[player_b.name])}  "
+          f"{wins[player_b.name]}")
+    print(f"Draws: {len(wins['draw'])}")
     print(f"Scores: {scores}")
-    print(f"Average score: {np.average(scores)}  (+-{np.std(scores):.2f})")
+    print(f"Average score, ({player_a.name} is positive): "
+          f"{np.mean(scores):.2f}, (sigma: {np.std(scores):.2f})")
+    print(f"There were {len(wins['draw'])} draws")
 
 
 if __name__ == '__main__':

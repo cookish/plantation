@@ -15,8 +15,8 @@ def main():
             'colonise': 0.1,
             'spray': 0.05,
             'bomb': 0.05
-        })
-    player_handler_b = RandomPlayerDumb(-1)
+        }, name="Duke Nukem")
+    player_handler_b = RandomPlayerDumb(-1, name="Dumb")
 
     engine.verbose = True
     board = engine.run_game(
@@ -27,7 +27,7 @@ def main():
         max_turns=10,
         starting_tiles=3
     )
-    _score = engine.score_board(board)
+    _score = engine.score_board(board, player_handler_a, player_handler_b)
 
 
 if __name__ == '__main__':

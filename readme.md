@@ -119,4 +119,3 @@ RandomPlayer makes a weighted random choice of valid moves each turn.
 
 # Todo
 - Make a chess clock
-- Make two modes, one for single game, one for bulk running games
