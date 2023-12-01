@@ -3,13 +3,12 @@ import numpy as np
 from ai_players.random_player import RandomPlayer
 from ai_players.random_player_dumb import RandomPlayerDumb
 
-
 import engine
 
 
 def main():
-    name_a = "Duke Nukem"
-    name_b = "Grower"
+    name_a = "DukeNukem"
+    name_b = "PeaShooter"
     num_games = 100
     player_a = RandomPlayer(
         sign=1,
@@ -77,16 +76,23 @@ def main():
         player_a, player_b = player_b, player_a
 
     print("]")
-    scores = wins[player_a.name] + [-x for x in wins[player_b.name]]
-    print(f"{player_a.name} wins: {len(wins[player_a.name])}  "
-          f"{wins[player_a.name]}")
-    print(f"{player_b.name} wins: {len(wins[player_b.name])}  "
-          f"{wins[player_b.name]}")
+    print()
+    signed_scores = wins[player_a.name] + [-x for x in wins[player_b.name]]
+
+    a_wins = len(wins[player_a.name])
+    b_wins = len(wins[player_b.name])
+    winner = player_a.name if a_wins > b_wins else player_b.name
+    print(f"{winner} is the winner!!")
+    print(f"{player_a.name} wins: {a_wins}")
+    print(f"{player_b.name} wins: {b_wins}")
     print(f"Draws: {len(wins['draw'])}")
-    print(f"Scores: {scores}")
-    print(f"Average score, ({player_a.name} is positive): "
-          f"{np.mean(scores):.2f}, (sigma: {np.std(scores):.2f})")
-    print(f"There were {len(wins['draw'])} draws")
+    print()
+    print("Detailed results:")
+    print(f"{player_a.name} wins: \n{wins[player_a.name]}\n")
+    print(f"{player_b.name} wins: \n{wins[player_b.name]}")
+
+    print(f"Average score, if we count scores for {player_b.name} as negative: "
+          f"{np.mean(signed_scores):.2f}, (sigma: {np.std(signed_scores):.2f})")
 
 
 if __name__ == '__main__':

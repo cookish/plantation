@@ -1,6 +1,6 @@
 # Game overview
-Plantation is a game between two players, "Plus" and "Minus". It is played on a 
-11x11 grid. In each player's turn, they have 3 moves. These can be used to:
+Plantation is a two player game played on a 11x11 grid. In each player's turn, they have 3 moves. These can 
+be used to:
 - "plant" (1 move): gain control of an empty tile adjacent to one of your tiles, with a score of 1 
 - "fertilise" (1 move): increase the score of one of your tiles by 1
 - "scout" (1 move) get information about the opponent's score in each tile in a 3x3 grid.
@@ -10,16 +10,15 @@ Plantation is a game between two players, "Plus" and "Minus". It is played on a
 
 Plantation is a game of imperfect information. In each turn, the player is given
 information about their tile scores only. Information about the opponent's tile 
-scores can only be received by moves. "Scout" directly gives scores in a region, 
-but "plant", "colonise", "spray" and "bomb" can also yield some information.
+scores can only be gained by interrogating the response to player moves. "Scout" directly gives the opponent's
+scores in a region, but "plant", "colonise", "spray" and "bomb" can also yield some information.
 
-Scores for Plus are represented by positive numbers, scores for Minus by negative.
-Plus starts off with three randomly selected tiles in the left-most column with
-a score of +1. Similarly, Minus starts off with three random tiles in the right-most
+Scores for Player 1 are represented by positive numbers, and Player 2 has negative 
+numbers. Player 1 starts off with three randomly selected tiles in the left-most column with
+a score of +1. Similarly, Player 2 starts off with three random tiles in the right-most
 column with -1.
 
-Plus moves first, then each player alternates turns with three moves per turn. The
-game ends after each player has had 100 turns, where the winner is decided by 
+Each player alternates turns with three moves per turn. The  game ends after each player has had 100 turns, where the winner is decided by 
 whoever has the highest sum of tile scores.
 
 # Board layout
@@ -40,9 +39,9 @@ Example board:
 10 |    |    |    |    |    |    |    |    |    | -1 | -2 |
    ========================================================
  ```
-Plus owns tiles (2, 3), (3, 0), (6, 0), and (9, 0) with a total score of +4. 
+Player 1 owns tiles (2, 3), (3, 0), (6, 0), and (9, 0) with a total score of +4. 
 
-Minus owns tiles (1, 10), (5, 9), (5, 10), (5,9) and (10, 10) with a total score of -6.
+Player 2 owns tiles (1, 10), (5, 9), (5, 10), (5,9) and (10, 10) with a total score of -6.
 
 # Command details
 
@@ -104,15 +103,31 @@ Return: ```OK #``` or ```error``` (# is the number of plantation levels reduced)
 
 Affects a single tile. If your opponent has planted the tile, it reduces their plantation level by up to 3 levels. Returns the number of plantation levels reduced.
 
+# Running the game
+Clone the repo, then 
+
+```python single_game.py``` 
+
+to run a single game, or 
+
+```python many_games.py``` 
+
+to run a series of games and collect overall stats.
+
+## Pre-requisites
+python 3, numpy
+
 # Building an AI player
 
 Create a file in the AI_players folder that extends the ```Player``` class 
 and implement the ```get_move``` method and optionally the ```handle_move_result```
-method if you want to learn from the return values of your moves. 
+method (if you want to process the return values of your moves). 
 
-There are two example AI agents in random_player.py and random_player_dumb.py.
+There are two example AI agents in ```random_player.py``` and 
+```random_player_dumb.py```.
 
-RandomPlayerDumb randomly makes random moves, but doesn't check if they are valid
-first, so gets lots of errors.
+```RandomPlayerDumb``` randomly makes random moves, but doesn't check if they 
+are valid first, so gets lots of errors.
 
-RandomPlayer makes a weighted random choice of valid moves each turn.
+```RandomPlayer``` makes a weighted random choice of valid moves each turn.
+
