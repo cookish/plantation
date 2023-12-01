@@ -5,10 +5,13 @@ import numpy as np
 class Player:
     num_rows = 0
     num_cols = 0
-    player = 0
+    sign = 0
 
     def __init__(self, player: int):
-        self.player = player
+        self.sign = player
+
+    def set_sign(self, sign):
+        self.sign = sign
 
     def get_move(
             self,

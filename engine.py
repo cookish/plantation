@@ -12,6 +12,7 @@ moves_required = {
     'bomb': 2
 }
 bomb_damage = 4
+verbose = True
 
 
 def run_game(
@@ -26,15 +27,15 @@ def run_game(
     board = np.zeros((num_rows, num_cols), dtype=int)
     initialise_board(board, starting_tiles)
     for turn in range(1, max_turns+1):
-        print()
-        print("---------------------------------------------------------------")
-        print(f"Turn {turn}")
-        print("=========")
+        vprint()
+        vprint("--------------------------------------------------------------")
+        vprint(f"Turn {turn}")
+        vprint("=========")
         run_turn(1, player_handler_p, board)
-        print()
+        vprint()
         run_turn(-1, player_handler_m, board)
 
-    print("********** Game over! **********")
+    vprint("********** Game over! **********")
     return board
 
 
@@ -51,51 +52,52 @@ def score_board(board):
     total_p = np.sum(board[board > 0])
     final_score = total_p + total_m
 
-    print()
-    print("================ Final score ================")
-    print(f"Plus: {total_p:+}")
-    print(f"Minus: {total_m:+}")
+    vprint()
+    vprint("================ Final score ================")
+    vprint(f"Plus: {total_p:+}")
+    vprint(f"Minus: {total_m:+}")
     if final_score == 0:
-        print("It's a draw!")
+        vprint("It's a draw!")
     else:
-        print(f"{'Plus' if final_score > 0 else 'Minus'} "
-              f"wins by {abs(final_score)} points!")
+        vprint(f"{'Plus' if final_score > 0 else 'Minus'} "
+               f"wins by {abs(final_score)} points!")
     return final_score
 
 
-def run_turn(player: int, player_handler: Player, board: np.array):
-    print_board(board)
+def run_turn(sign: int, player_handler: Player, board: np.array):
+    if verbose:
+        print_board(board)
     moves_remaining = 3
-    name = "Plus" if player == 1 else "Minus"
-    print(f"### {name} ###")
+    name = "Plus" if sign == 1 else "Minus"
+    vprint(f"### {name} ###")
     while moves_remaining > 0:
-        player_board = get_player_restricted_board(board, player)
+        player_board = get_player_restricted_board(board, sign)
         move, pos = player_handler.get_move(player_board, moves_remaining)
-        result = do_move(move, pos, player, moves_remaining, board)
+        result = do_move(move, pos, sign, moves_remaining, board)
         move_str = f"{move} ({','.join([str(p) for p in pos])})"
-        print(f"{move_str:<20}  |  {result}")
+        vprint(f"{move_str:<20}  |  {result}")
         player_handler.handle_move_result(move, pos, result)
         moves_remaining -= moves_required[move]
 
 
-def do_fertilise(pos: List[int], player: int, board: np.array) -> str:
+def do_fertilise(pos: List[int], sign: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
-    if player * board[row][col] > 0:
-        board[row][col] += player
+    if sign * board[row][col] > 0:
+        board[row][col] += sign
         return "OK"
     else:
-        print("do_fertilise: tile not owned by player")
+        vprint("do_fertilise: tile not owned by player")
         return "error"
 
 
-def do_plant(pos: List[int], player: int, board: np.array) -> str:
+def do_plant(pos: List[int], sign: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
-    if board[row][col] * player > 0:
-        print("do_plant: target tile already owned by player")
+    if board[row][col] * sign > 0:
+        vprint("do_plant: target tile already owned by player")
         return "error"
-    elif board[row][col] * player < 0:
+    elif board[row][col] * sign < 0:
         return f"occupied {board[row][col]}"
 
     # now we know that board[row][col] == 0
@@ -103,15 +105,15 @@ def do_plant(pos: List[int], player: int, board: np.array) -> str:
         test_row = row + delta_r
         test_col = col + delta_c
         if 0 <= test_row < board.shape[0] and 0 <= test_col < board.shape[1]:
-            if board[row + delta_r][col + delta_c] * player > 0:
-                board[row][col] = player
+            if board[row + delta_r][col + delta_c] * sign > 0:
+                board[row][col] = sign
                 return "OK"
 
-    print("do_plant: no adjacent tiles owned by player")
+    vprint("do_plant: no adjacent tiles owned by player")
     return "error"
 
 
-def do_scout(pos: List[int], _player: int, board: np.array) -> str:
+def do_scout(pos: List[int], _sign: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
     results = []
@@ -125,25 +127,25 @@ def do_scout(pos: List[int], _player: int, board: np.array) -> str:
     return "OK " + ",".join([str(x) for x in results])
 
 
-def do_colonise(pos: List[int], player: int, board: np.array) -> str:
+def do_colonise(pos: List[int], sign: int, board: np.array) -> str:
 
     row, col, source_row, source_col = pos[0], pos[1], pos[2], pos[3]
-    if board[row][col] * player > 0:
-        print("do_colonise: target tile already owned by player")
+    if board[row][col] * sign > 0:
+        vprint("do_colonise: target tile already owned by player")
         return "error"
-    elif board[source_row][source_col] * player < 2:
-        print("do_colonise: source tile count less than 2")
+    elif board[source_row][source_col] * sign < 2:
+        vprint("do_colonise: source tile count less than 2")
         return "error"
 
-    elif board[row][col] * player < 0:
+    elif board[row][col] * sign < 0:
         return f"occupied {board[row][col]}"
     else:
-        board[row][col] = player
-        board[source_row][source_col] -= player
+        board[row][col] = sign
+        board[source_row][source_col] -= sign
         return "OK"
 
 
-def do_spray(pos: List[int], player: int, board: np.array) -> str:
+def do_spray(pos: List[int], sign: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
     total = 0
@@ -151,58 +153,58 @@ def do_spray(pos: List[int], player: int, board: np.array) -> str:
         test_row = row + delta_r
         test_col = col + delta_c
         if 0 <= test_row < board.shape[0] and 0 <= test_col < board.shape[1]:
-            if board[test_row][test_col] * player < 0:
-                board[row + delta_r][col + delta_c] += player
+            if board[test_row][test_col] * sign < 0:
+                board[row + delta_r][col + delta_c] += sign
                 total += 1
     return f"OK {total}"
 
 
-def do_bomb(pos: List[int], player: int, board: np.array) -> str:
+def do_bomb(pos: List[int], sign: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
-    if board[row][col] * player > 0:
+    if board[row][col] * sign > 0:
 
-        print(f"do_bomb: target tile owned by player")
+        vprint(f"do_bomb: target tile owned by player")
         return "error"
     else:
         levels_reduced = min(abs(board[row][col]), bomb_damage)
-        board[row][col] += player * levels_reduced
+        board[row][col] += sign * levels_reduced
         return f"OK {levels_reduced}"
 
 
 def do_move(
         move: str,
         pos: List[int],
-        player: int,
+        sign: int,
         moves_remaining: int,
         board: np.array
 ):
     if len(pos) < 2:
-        print(f"Invalid position: {pos}")
+        vprint(f"Invalid position: {pos}")
         return "error"
     row, col = pos[0], pos[1]
     if row < 0 or row >= board.shape[0] or col < 0 or col >= board.shape[1]:
-        print(f"Invalid location: ({row}, {col})")
+        vprint(f"Invalid location: ({row}, {col})")
         return "error"
     if move not in moves_required.keys():
-        print(f"Invalid move: {move}")
+        vprint(f"Invalid move: {move}")
         return "error"
     if moves_required[move] > moves_remaining:
-        print(f"Not enough moves remaining for {move}")
+        vprint(f"Not enough moves remaining for {move}")
         return "error"
 
     if move == 'fertilise':
-        return do_fertilise(pos, player, board)
+        return do_fertilise(pos, sign, board)
     elif move == 'plant':
-        return do_plant(pos, player, board)
+        return do_plant(pos, sign, board)
     elif move == 'scout':
-        return do_scout(pos, player, board)
+        return do_scout(pos, sign, board)
     elif move == 'colonise':
-        return do_colonise(pos, player, board)
+        return do_colonise(pos, sign, board)
     elif move == 'spray':
-        return do_spray(pos, player, board)
+        return do_spray(pos, sign, board)
     else:  # move == 'bomb':
-        return do_bomb(pos, player, board)
+        return do_bomb(pos, sign, board)
 
 
 def print_board(board):
@@ -230,3 +232,8 @@ def print_board(board):
 
         print()
     print("   " + "=" * (num_cols * 5 + 1))
+
+
+def vprint(*args, **kwargs):
+    if verbose:
+        print(*args, **kwargs)

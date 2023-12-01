@@ -2,7 +2,7 @@ from ai_players.random_player import RandomPlayer
 from ai_players.random_player_dumb import RandomPlayerDumb
 
 
-from engine import run_game, score_board
+import engine
 
 
 def main():
@@ -18,7 +18,8 @@ def main():
         })
     player_handler_b = RandomPlayerDumb(-1)
 
-    board = run_game(
+    engine.verbose = True
+    board = engine.run_game(
         player_handler_a,
         player_handler_b,
         num_rows=11,
@@ -26,7 +27,7 @@ def main():
         max_turns=10,
         starting_tiles=3
     )
-    _score = score_board(board)
+    _score = engine.score_board(board)
 
 
 if __name__ == '__main__':

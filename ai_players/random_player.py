@@ -7,10 +7,10 @@ import numpy as np
 class RandomPlayer (Player):
 
     def __init__(
-            self, player: int,
+            self, sign: int,
             move_probabilities: Dict[str, float] = None
     ):
-        super().__init__(player)
+        super().__init__(sign)
         if move_probabilities is None:
             self.move_probabilities = {
                 'fertilise': 0.2,
@@ -90,5 +90,5 @@ class RandomPlayer (Player):
                 for i in range(attempts):
                     row = random.randint(0, rows - 1)
                     col = random.randint(0, cols - 1)
-                    if board[row][col] * self.player == 0:
+                    if board[row][col] * self.sign == 0:
                         return move, [row, col]
