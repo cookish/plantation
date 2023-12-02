@@ -1,14 +1,14 @@
 # Plantation
-![Plantation logo](logo.jpeg "Plantation logo").
+![Plantation logo](logo2.webp "Plantation logo").
 
 ## Game overview
 Plantation is a two player game played on a 11x11 grid. In each player's turn, they have 3 moves. These can 
 be used to:
-- "plant" (1 move): gain control of an empty tile adjacent to one of your tiles, with a score of 1 
+- "plant" (1 move): gain control of an empty tile adjacent (not diagonal) to one of your tiles, with a score of 1 
 - "fertilise" (1 move): increase the score of one of your tiles by 1
 - "scout" (1 move) get information about the opponent's score in each tile in a 3x3 grid.
 - "colonise" (2 moves): long distance plant to any empty tile anywhere on the board. You need a source tile with a score of 2 or more, the source's score is reduced by 1. 
-- "spray" (2 moves): attack several tiles, reducing the opponent's score in the target tile and any adjacent tiles by 1.
+- "spray" (2 moves): attack several tiles, reducing the opponent's score in the target tile and the four adjacent tiles by 1.
 - "bomb" (2 moves): attack a single tile, reducing the opponent's score in that tile by up to 4.
 
 Plantation is a game of imperfect information. In each turn, the player is given
@@ -65,8 +65,7 @@ If you do not control the tile, "error" is returned.
 Moves: 1  
 Return: ```OK```, ```error``` or ```occupied #```  (if occupied, # is the score of the opponent's tile)
 
-Target must be a tile not planted by you that is adjacent to one of your tiles. 
-If it is empty, you gain control of that tile with a plantation count of 1.
+Target must be a tile not planted by you that is adjacent (not diagonal) to one of your tiles. If it is empty, you gain control of that tile with a plantation count of 1.
 
 ```plant``` can give  some information about an opponent's tile. If the tile is 
 already owned by your opponent, nothing happens and "occupied" is returned 
