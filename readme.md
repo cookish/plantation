@@ -13,7 +13,8 @@ you win by default. Please ensure that all your chatGPT prompts
 say "please" and "thank you".
 
 # Plantation Game
-![Plantation logo](logo2.webp "Plantation logo").
+![Plantation logo](logo2.webp "Plantation logo")
+(Thank you chatGPT / Dall-E for the pretty picture.)
 
 ## Game overview
 Plantation is a two player game played on a 11x11 grid. In each player's turn, they have 3 moves. These can 
@@ -90,7 +91,12 @@ together with the opponent's score in the tile.
 Moves: 1  
 Return: ```OK a,b,c,d,e,f,g,h,i``` or ```error```    
 
-a-i are the values of the 3x3 grid centred around the target tile.
+a-i are the values of the 3x3 grid centred around the target tile:
+```
+a b c
+d e f
+g h i
+```
 
 --- 
 #### ```colonise  [target_row, target_col, source_row, source_col]```  
