@@ -127,7 +127,7 @@ For each tile affected, if your opponent has planted that tile, their count is r
 Moves: 2  
 Return: ```OK #``` or ```error``` (# is the number of plantation levels reduced)
 
-Affects a single tile. If your opponent has planted the tile, it reduces their plantation level by up to 3 levels. Returns the number of plantation levels reduced.
+Affects a single tile. If your opponent has planted the tile, it reduces their plantation level by up to 4 levels. Returns the number of plantation levels reduced.
 
 ## Running the game
 Clone the repo, then 
