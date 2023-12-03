@@ -141,7 +141,7 @@ to run a single game, or
 to run a series of games and collect overall stats.
 
 ### Pre-requisites
-python 3, numpy
+python 3, numpy, scipy (to run ScryOrDie bot)
 
 ## Building an AI player
 
@@ -177,5 +177,10 @@ clock: you start with an initial number of  seconds, then gain a more time
 after each move. By default, you have 1 second starting time plus 0.1 seconds 
 per turn.
 
-When a player runs out of time, the game is ended and the other player gets a
+When a player runs out of time, the game ends and their opponent gets a
 score of 100 (or -100).
+
+# Other programming languages
+If enough people want to do this, we can make a dummy Python class that sends
+requests for moves over Unix socket connections, then you can make a listener
+in Java / c++ / INTERCAL / whatever.
