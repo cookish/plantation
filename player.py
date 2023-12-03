@@ -3,8 +3,6 @@ import numpy as np
 
 
 class Player:
-    num_rows = 0
-    num_cols = 0
     sign = 0
     name = "Player"
 
@@ -21,11 +19,12 @@ class Player:
     def get_move(
             self,
             board: np.array,
+            turn: int,
             moves_remaining: int,
-            time_remaining: float
+            time_remaining: float,
     ) -> Tuple[str, List[int]]:
 
         return "", []
 
-    def handle_move_result(self, move, pos, result):
+    def handle_move_result(self, move, turn, pos, result):
         pass

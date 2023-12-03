@@ -131,3 +131,11 @@ are valid first, so gets lots of errors.
 
 ```RandomPlayer``` makes a weighted random choice of valid moves each turn.
 
+# Clock
+Players have a configurable amount of time per turn. This works like a chess
+clock: you start with an initial number of  seconds, then gain a more time 
+after each move. By default, you have 1 second starting time plus 0.1 seconds 
+per turn.
+
+When a player runs out of time, the game is ended and the other player gets a
+score of 100 (or -100).

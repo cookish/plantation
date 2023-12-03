@@ -8,6 +8,7 @@ import time
 moves_required = {
     'fertilise': 1,
     'plant': 1,
+    'scout': 1,
     'colonise': 2,
     'spray': 2,
     'bomb': 2
@@ -36,12 +37,12 @@ def run_game(
         vprint("--------------------------------------------------------------")
         vprint(f"Turn {turn}")
         vprint("=========")
-        t = run_turn(1, player_handler_p, board, time_p)
+        t = run_turn(1, player_handler_p, board, time_p, turn)
         time_p = time_p - t + time_increment
         if time_p < 0:
             break
         vprint()
-        t = run_turn(-1, player_handler_m, board, time_m)
+        t = run_turn(-1, player_handler_m, board, time_m, turn)
         time_m = time_m - t + time_increment
         if time_m < 0:
             break
@@ -87,7 +88,8 @@ def run_turn(
         sign: int,
         player_handler: Player,
         board: np.array,
-        time_remaining: float
+        time_remaining: float,
+        turn: int
 ) -> float:
     if verbose:
         print_board(board)
@@ -99,12 +101,13 @@ def run_turn(
         player_board = get_player_restricted_board(board, sign)
         start_time = time.time()
         move, pos = player_handler.get_move(
-            player_board, moves_remaining, time_remaining)
+            player_board, turn, moves_remaining, time_remaining
+        )
         time_taken += time.time() - start_time
         result = do_move(move, pos, sign, moves_remaining, board)
         move_str = f"{move} ({','.join([str(p) for p in pos])})"
         vprint(f"{move_str:<20}  |  {result}")
-        player_handler.handle_move_result(move, pos, result)
+        player_handler.handle_move_result(move, turn, pos, result)
         moves_remaining -= moves_required[move]
     return time_taken
 
@@ -146,8 +149,8 @@ def do_scout(pos: List[int], _sign: int, board: np.array) -> str:
 
     row, col = pos[0], pos[1]
     results = []
-    for delta_c in (-1, 0, 1):
-        for delta_r in (-1, 0, 1):
+    for delta_r in (-1, 0, 1):
+        for delta_c in (-1, 0, 1):
             test_row = row + delta_r
             test_col = col + delta_c
             if 0 <= test_row < board.shape[0] \

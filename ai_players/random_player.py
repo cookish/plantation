@@ -4,6 +4,11 @@ import random
 import numpy as np
 
 
+# TODO:
+# make it choose plant options randomly
+# make it handle options gracefully
+# remove menton of attempts
+
 class RandomPlayer (Player):
 
     def __init__(
@@ -25,8 +30,9 @@ class RandomPlayer (Player):
     def get_move(
             self,
             board: np.array,
+            turn: int,
             moves_remaining: int,
-            time_remaining: float
+            time_remaining: float,
     ) -> Tuple[str, List[int]]:
         attempts = 50
         rows = board.shape[0]

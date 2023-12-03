@@ -10,8 +10,9 @@ class RandomPlayerDumb (Player):
     def get_move(
             self,
             board: np.array,
+            turn: int,
             moves_remaining: int,
-            time_remaining: float
+            time_remaining: float,
     ) -> Tuple[str, List[int]]:
 
         if moves_remaining > 1:
