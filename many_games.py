@@ -2,6 +2,7 @@ import numpy as np
 
 from ai_players.random_player import RandomPlayer
 from ai_players.random_player_dumb import RandomPlayerDumb
+from ai_players.scry_and_die import ScryAndDie
 
 import engine
 
@@ -32,6 +33,10 @@ def main():
             'bomb': 2
         },
         name=name_b
+    )
+    player_b = ScryAndDie(
+        sign=-1,
+        name="Vaarsuvius"
     )
 
     engine.verbose = False

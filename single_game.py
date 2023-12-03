@@ -1,5 +1,6 @@
 from ai_players.random_player import RandomPlayer
 from ai_players.random_player_dumb import RandomPlayerDumb
+from ai_players.scry_and_die import ScryAndDie
 
 
 import engine
@@ -15,8 +16,9 @@ def main():
             'colonise': 0.1,
             'spray': 0.05,
             'bomb': 0.05
-        }, name="Duke Nukem")
-    player_handler_b = RandomPlayerDumb(-1, name="Dumb")
+        }, name="DukeNukem")
+    # player_handler_b = RandomPlayerDumb(-1, name="Dumb")
+    player_handler_b = ScryAndDie(-1, name="Varsuvius")
 
     engine.verbose = True
     _score = engine.run_game(
@@ -24,10 +26,10 @@ def main():
         player_handler_b,
         num_rows=11,
         num_cols=11,
-        max_turns=10,
+        max_turns=100,
         starting_tiles=3,
-        starting_seconds=1.0,
-        time_increment=0.1
+        starting_seconds=1000.0,
+        time_increment=1000
     )
 
 
