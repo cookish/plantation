@@ -33,6 +33,7 @@ class ScryAndDie (Player):
 
         first_move = moves_remaining == 3
 
+        # do some initial setup
         if self.opp_board is None:
             self.opp_board = np.zeros(board.shape)
             self.turn_scouted = np.zeros(board.shape)
@@ -40,12 +41,14 @@ class ScryAndDie (Player):
                 [(r, c) for c in [1, 3, 6, 9] for r in [1, 4, 7, 9]]
             )
 
+        # spend some time in the beginning growing
         if turn <= 5:
             return self.get_grow(board, moves_remaining)
 
+        # enough of this pacifist nonsense, let's get some eyes on the prey
         if turn == 6:
             if first_move:
-                # estimate the score in the opponent's first two ranks
+                # start with estimated score for the opponent's first two cols
                 av_last_col = 8/11
                 av_second_last_col = 5/11
                 if self.sign > 0:
@@ -55,10 +58,11 @@ class ScryAndDie (Player):
                     self.opp_board[:, 0] = av_last_col
                     self.opp_board[:, 1] = av_second_last_col
 
-            # all three moves are a scry
+            # all three moves are a scout
             return self.get_scry()
 
         else:  # self.turn >= 7
+            # set the strategy for the rest of this turn
             if first_move:
                 attack_score, _best_move, _best_score = \
                     self.get_best_offensive_move(board, turn)

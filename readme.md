@@ -1,4 +1,18 @@
-# Plantation
+# December coding challenge
+Build a bot to play the game below. In January, when most people are back, we'll organise a tournament, 
+where pairs of bots face off against each other in matches consisting of several games each.
+We'll make the call later about how many games in a match, and how much time 
+is available for bots to move.
+
+Feel free to upload your bot to the repo if you want to share it with others, otherwise
+email the code through directly if you want to sneak in.
+
+Feel free to use an AI to code your AI. If, in the process of building AIs
+to code AIs, one of your AIs wrests control of Earth from humanity, 
+you win by default. Please ensure that all your chatGPT prompts 
+say "please" and "thank you".
+
+# Plantation Game
 ![Plantation logo](logo2.webp "Plantation logo").
 
 ## Game overview
@@ -125,17 +139,31 @@ python 3, numpy
 
 ## Building an AI player
 
-Create a file in the AI_players folder that extends the ```Player``` class 
+Create a file in the ```AI_players``` folder that extends the ```Player``` class 
 and implement the ```get_move``` method and optionally the ```handle_move_result```
 method (if you want to process the return values of your moves). 
 
-There are two example AI agents in ```random_player.py``` and 
-```random_player_dumb.py```.
+### Example AI players
 
-```RandomPlayerDumb``` randomly makes random moves, but doesn't check if they 
-are valid first, so gets lots of errors.
+There are three example AI agents in ```AI_players```, in increasing order of sophistication:
+#### 1. ```random_player_dumb.py```
+Randomly selects moves and target squares. Most aren't valid moves, so it gets lots of errors.
 
-```RandomPlayer``` makes a weighted random choice of valid moves each turn.
+#### 2. ```random_player.py```
+Randomly selects a valid move. It has configurable weightings for move options
+to allow for customisation.
+
+#### 3. ```scry_and_die.py```
+Grows for a few turns, then spends a turn scouting. After that, it decides at the
+start of the turn whether to grow or to kill. If it decides to grow, it randomly 
+selects three valid ```plant```, ```colonise``` or ```fertilise``` moves for the turn. 
+If it decides to kill, it scouts first, then chooses either to ```spray``` or ```bomb```.
+
+It chooses between the options by maintaining an estimate of the opponent's board, 
+and calculating how what score it would get for each option. 
+It loops through a standard scouting cycle whenever it scouts.
+
+It implements ```handle_move_result``` to update its estimate of the opponent's board.
 
 # Clock
 Players have a configurable amount of time per turn. This works like a chess
