@@ -17,8 +17,17 @@ def main():
             'spray': 0.05,
             'bomb': 0.05
         }, name="DukeNukem")
+    player_handler_b = RandomPlayer(
+        1,
+        move_probabilities={
+            'fertilise': 10,
+            'plant': 10,
+            'colonise': 1,
+            'spray': 2,
+            'bomb': 1
+        }, name="CarlRogers")
     # player_handler_b = RandomPlayerDumb(-1, name="Dumb")
-    player_handler_b = ScryAndDie(-1, name="Varsuvius")
+    # player_handler_b = ScryAndDie(-1, name="Varsuvius")
 
     engine.verbose = True
     _score = engine.run_game(

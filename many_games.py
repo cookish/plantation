@@ -8,33 +8,30 @@ import engine
 
 
 def main():
-    name_a = "DukeNukem"
-    name_b = "PeaShooter"
-    num_games = 100
-    player_a = RandomPlayer(
-        sign=1,
-        move_probabilities={
-            'fertilise': 3,
-            'plant': 4,
-            'colonise': 2,
-            'spray': 15,
-            'bomb': 8
-        },
-        name=name_a
-    )
-    # player_a = RandomPlayerDumb(1, name="Dumb")
+    # num_games = 100
+    # player_a = RandomPlayer(
+    #     sign=1,
+    #     move_probabilities={
+    #         'fertilise': 3,
+    #         'plant': 4,
+    #         'colonise': 2,
+    #         'spray': 15,
+    #         'bomb': 8
+    #     },
+    #     name="DukeNukem"
+    # )
+
     player_b = RandomPlayer(
-        sign=-1,
+        1,
         move_probabilities={
             'fertilise': 10,
-            'plant': 20,
-            'colonise': 4,
-            'spray': 3,
-            'bomb': 2
-        },
-        name=name_b
-    )
-    player_b = ScryAndDie(
+            'plant': 10,
+            'colonise': 1,
+            'spray': 2,
+            'bomb': 1
+        }, name="CarlRogers")
+
+    player_a = ScryAndDie(
         sign=-1,
         name="Vaarsuvius"
     )
