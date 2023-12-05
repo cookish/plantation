@@ -25,7 +25,7 @@ class ScryAndDie (Player):
 
     def get_move(
             self,
-            board: np.array,
+            board: np.ndarray,
             turn: int,
             moves_remaining: int,
             time_remaining: float,
@@ -87,7 +87,7 @@ class ScryAndDie (Player):
                 return self.get_scry_and_die(board, turn, moves_remaining)
 
     def get_best_offensive_move(
-            self, board: np.array, turn: int
+            self, board: np.ndarray, turn: int
     ) -> Tuple[float, str, List[int]]:
         estimated_board = self.opp_board + \
                           (turn - self.turn_scouted) * 1.5 / 121.
@@ -114,7 +114,7 @@ class ScryAndDie (Player):
             return spray_score, 'spray', list(spray_pos)
 
     def get_scry_and_die(
-            self, board: np.array, turn: int, moves_remaining: int
+            self, board: np.ndarray, turn: int, moves_remaining: int
     ) -> Tuple[str, List[int]]:
         if moves_remaining == 3:  # we must scout
             return self.get_scry()
@@ -128,7 +128,7 @@ class ScryAndDie (Player):
         return 'scout', [scry_row, scry_col]
 
     def get_grow(
-            self, board: np.array, moves_remaining: int
+            self, board: np.ndarray, moves_remaining: int
     ) -> Tuple[str, List[int]]:
         zero_tiles = np.argwhere(board == 0)
         multi_tiles = np.argwhere(np.abs(board) > 1)

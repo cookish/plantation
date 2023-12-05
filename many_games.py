@@ -8,7 +8,8 @@ import engine
 
 
 def main():
-    # num_games = 100
+    num_games = 100
+
     # player_a = RandomPlayer(
     #     sign=1,
     #     move_probabilities={

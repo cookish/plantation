@@ -59,7 +59,7 @@ def run_game(
         return score_board(board, player_handler_p, player_handler_m)
 
 
-def initialise_board(board: np.array, starting_tiles: int) -> None:
+def initialise_board(board: np.ndarray, starting_tiles: int) -> None:
     random_rows = random.sample(range(board.shape[0]), starting_tiles)
     board[random_rows, 0] = 1
 
@@ -87,7 +87,7 @@ def score_board(board, player_p: Player, player_m: Player) -> float:
 def run_turn(
         sign: int,
         player_handler: Player,
-        board: np.array,
+        board: np.ndarray,
         time_remaining: float,
         turn: int
 ) -> float:
@@ -112,7 +112,7 @@ def run_turn(
     return time_taken
 
 
-def do_fertilise(pos: List[int], sign: int, board: np.array) -> str:
+def do_fertilise(pos: List[int], sign: int, board: np.ndarray) -> str:
 
     row, col = pos[0], pos[1]
     if sign * board[row][col] > 0:
@@ -123,7 +123,7 @@ def do_fertilise(pos: List[int], sign: int, board: np.array) -> str:
         return "error"
 
 
-def do_plant(pos: List[int], sign: int, board: np.array) -> str:
+def do_plant(pos: List[int], sign: int, board: np.ndarray) -> str:
 
     row, col = pos[0], pos[1]
     if board[row][col] * sign > 0:
@@ -145,7 +145,7 @@ def do_plant(pos: List[int], sign: int, board: np.array) -> str:
     return "error"
 
 
-def do_scout(pos: List[int], _sign: int, board: np.array) -> str:
+def do_scout(pos: List[int], _sign: int, board: np.ndarray) -> str:
 
     row, col = pos[0], pos[1]
     results = []
@@ -159,7 +159,7 @@ def do_scout(pos: List[int], _sign: int, board: np.array) -> str:
     return "OK " + ",".join([str(x) for x in results])
 
 
-def do_colonise(pos: List[int], sign: int, board: np.array) -> str:
+def do_colonise(pos: List[int], sign: int, board: np.ndarray) -> str:
 
     row, col, source_row, source_col = pos[0], pos[1], pos[2], pos[3]
     if board[row][col] * sign > 0:
@@ -177,7 +177,7 @@ def do_colonise(pos: List[int], sign: int, board: np.array) -> str:
         return "OK"
 
 
-def do_spray(pos: List[int], sign: int, board: np.array) -> str:
+def do_spray(pos: List[int], sign: int, board: np.ndarray) -> str:
 
     row, col = pos[0], pos[1]
     total = 0
@@ -191,7 +191,7 @@ def do_spray(pos: List[int], sign: int, board: np.array) -> str:
     return f"OK {total}"
 
 
-def do_bomb(pos: List[int], sign: int, board: np.array) -> str:
+def do_bomb(pos: List[int], sign: int, board: np.ndarray) -> str:
 
     row, col = pos[0], pos[1]
     if board[row][col] * sign > 0:
@@ -209,7 +209,7 @@ def do_move(
         pos: List[int],
         sign: int,
         moves_remaining: int,
-        board: np.array
+        board: np.ndarray
 ):
     if len(pos) < 2:
         vprint(f"Invalid position: {pos}")
