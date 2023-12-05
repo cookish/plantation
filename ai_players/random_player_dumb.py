@@ -9,7 +9,7 @@ class RandomPlayerDumb (Player):
 
     def get_move(
             self,
-            board: np.array,
+            board: np.ndarray,
             turn: int,
             moves_remaining: int,
             time_remaining: float,
