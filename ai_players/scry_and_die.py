@@ -183,6 +183,7 @@ class ScryAndDie (Player):
             if code == 'OK':
                 vals_str = result.split(' ')[1]
                 vals = np.array([int(n) for n in vals_str.split(',')])
+                vals[vals * self.sign > 0] = 0  # only record opponent's squares
                 self.opp_board[pos[0]-1:pos[0]+2, pos[1]-1:pos[1]+2] \
                     = abs(vals.reshape((3, 3)))
                 self.turn_scouted[
