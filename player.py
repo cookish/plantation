@@ -16,6 +16,12 @@ class Player:
     def set_sign(self, sign):
         self.sign = sign
 
+    def end_game(self, your_score: int, opponent_score: int):
+        pass
+
+    def start_game(self, board_shape: Tuple[int]):
+        pass
+
     def get_move(
             self,
             board: np.ndarray,

@@ -146,8 +146,11 @@ python 3, numpy, scipy (to run ScryOrDie bot)
 ## Building an AI player
 
 Create a file in the ```AI_players``` folder that extends the ```Player``` class 
-and implement the ```get_move``` method and optionally the ```handle_move_result```
-method (if you want to process the return values of your moves). 
+and implement the ```get_move``` method. You can also implement some or all of 
+the following optional functions:
+ - ```handle_move_result```: process the return values of your moves
+ - ```start_game```: called at the start of each game. Passes the size of the board (11x11)
+ - ```end_game```: called at the end of the game. Passes your score and your opponent's score.
 
 ### Example AI players
 
