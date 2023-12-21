@@ -4,6 +4,8 @@ from include import get_player_restricted_board
 import numpy as np
 import random
 import time
+from board_stats import BoardStats
+board_stats = BoardStats()
 
 moves_required = {
     'fertilise': 1,
@@ -28,7 +30,7 @@ def run_game(
         time_increment: float
 ) -> float:
 
-    board = np.zeros((num_rows, num_cols), dtype=int)
+    board = np.zeros((num_rows, num_cols), dtype="byte")
     initialise_board(board, starting_tiles)
     time_p = starting_seconds
     time_m = starting_seconds
@@ -46,6 +48,8 @@ def run_game(
         time_m = time_m - t + time_increment
         if time_m < 0:
             break
+
+    board_stats.end_game()
 
     vprint("********** Game over! **********")
     if time_p < 0:
@@ -91,6 +95,8 @@ def run_turn(
         time_remaining: float,
         turn: int
 ) -> float:
+    global board_stats
+
     if verbose:
         print_board(board)
     moves_remaining = 3
@@ -108,7 +114,9 @@ def run_turn(
         move_str = f"{move} ({','.join([str(p) for p in pos])})"
         vprint(f"{move_str:<20}  |  {result}")
         player_handler.handle_move_result(move, turn, pos, result)
+        board_stats.record_move(sign, move, pos, result, turn)
         moves_remaining -= moves_required[move]
+    board_stats.end_turn(sign, turn, board)
     return time_taken
 
 

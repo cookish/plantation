@@ -22,19 +22,23 @@ def main():
     #     name="DukeNukem"
     # )
 
-    player_b = RandomPlayer(
-        1,
-        move_probabilities={
-            'fertilise': 10,
-            'plant': 10,
-            'colonise': 1,
-            'spray': 2,
-            'bomb': 1
-        }, name="CarlRogers")
+    # player_b = RandomPlayer(
+    #     1,
+    #     move_probabilities={
+    #         'fertilise': 10,
+    #         'plant': 10,
+    #         'colonise': 1,
+    #         'spray': 2,
+    #         'bomb': 1
+    #     }, name="CarlRogers")
 
     player_a = ScryAndDie(
         sign=-1,
         name="Vaarsuvius"
+    )
+    player_b = ScryAndDie(
+        sign=1,
+        name="Xykon"
     )
 
     engine.verbose = False
