@@ -187,3 +187,6 @@ score of 100 (or -100).
 If enough people want to do this, we can make a dummy Python class that sends
 requests for moves over Unix socket connections, then you can make a listener
 in Java / c++ / INTERCAL / whatever.
+
+Alternately, Paul is cooking (hah) up a pipeline to communicate to PHP via 
+standard in/out, so sockets aren't the only option.

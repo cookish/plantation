@@ -10,23 +10,29 @@ class ScryAndDie (Player):
     opp_board = None
     turn_scouted = None
     mode = ''
-    scry_locations = None
+    scry_cycle = None
     cross_coords = np.array([
         [-1, 0], [0, -1], [0, 0], [0, 1], [1, 0]
     ])
 
     def __init__(
-            self, sign: int,
+            self,
             name: Optional[str] = None
     ):
-        super().__init__(sign, name)
+        super().__init__(name)
 
-    def start_game(self, board_shape: Tuple[int]):
+    def start_game(self, board_shape: Tuple[int], sign: int):
+        super().start_game(board_shape, sign)
         self.opp_board = np.zeros(board_shape)
         self.turn_scouted = np.zeros(board_shape)
-        self.scry_locations = cycle(
-            [(r, c) for c in [1, 3, 6, 9] for r in [1, 4, 7, 9]]
-        )
+
+        # randomly select the cycle for scrying, but start with the first col, as that is most important to scry
+        # early to find out where the opponent started
+        first_col = [(r, 1) for r in [1, 4, 7, 9]]
+        random.shuffle(first_col)
+        remaining_board = [(r, c) for c in [3, 6, 9] for r in [1, 4, 7, 9]]
+        random.shuffle(remaining_board)
+        self.scry_cycle = cycle(first_col + remaining_board)
 
     def get_move(
             self,
@@ -121,7 +127,7 @@ class ScryAndDie (Player):
             return best_offensive_move, best_offensive_pos
 
     def get_scry(self) -> Tuple[str, List[int]]:
-        scry_row, scry_col = next(self.scry_locations)
+        scry_row, scry_col = next(self.scry_cycle)
         return 'scout', [scry_row, scry_col]
 
     def get_grow(

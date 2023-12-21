@@ -32,8 +32,8 @@ def run_game(
 
     board = np.zeros((num_rows, num_cols), dtype="byte")
     initialise_board(board, starting_tiles)
-    player_handler_m.start_game(board.shape)
-    player_handler_p.start_game(board.shape)
+    player_handler_m.start_game(board.shape, sign=-1)
+    player_handler_p.start_game(board.shape, sign=1)
 
     time_p = starting_seconds
     time_m = starting_seconds

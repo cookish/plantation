@@ -7,11 +7,11 @@ import numpy as np
 class RandomPlayer (Player):
 
     def __init__(
-            self, sign: int,
+            self,
             move_probabilities: Dict[str, float] = None,
             name: Optional[str] = None
     ):
-        super().__init__(sign, name)
+        super().__init__(name)
         if move_probabilities is None:
             self.move_probabilities = {
                 'fertilise': 0.2,

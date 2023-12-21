@@ -27,8 +27,8 @@ def main():
     #         'bomb': 1
     #     }, name="CarlRogers")
     # player_handler_b = RandomPlayerDumb(-1, name="Dumb")
-    player_handler_a = ScryAndDie(1, name="Xykon")
-    player_handler_b = ScryAndDie(-1, name="Varsuvius")
+    player_handler_a = ScryAndDie(name="Xykon")
+    player_handler_b = ScryAndDie(name="Varsuvius")
 
     engine.verbose = True
     _score = engine.run_game(

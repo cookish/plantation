@@ -32,14 +32,8 @@ def main():
     #         'bomb': 1
     #     }, name="CarlRogers")
 
-    player_a = ScryAndDie(
-        sign=-1,
-        name="Vaarsuvius"
-    )
-    player_b = ScryAndDie(
-        sign=1,
-        name="Xykon"
-    )
+    player_a = ScryAndDie(name="Vaarsuvius")
+    player_b = ScryAndDie(name="Xykon")
 
     engine.verbose = False
     wins = {
@@ -51,11 +45,8 @@ def main():
     print("Running games: [", end="")
     for game in range(num_games):
         # print progress bar
-        if game % (num_games // 20) == 0:
+        if game % max((num_games // 20), 1) == 0:
             print("=", end="")
-
-        player_a.set_sign(1)
-        player_b.set_sign(-1)
 
         score = engine.run_game(
             player_handler_p=player_a,
@@ -88,8 +79,13 @@ def main():
 
     a_wins = len(wins[player_a.name])
     b_wins = len(wins[player_b.name])
-    winner = player_a.name if a_wins > b_wins else player_b.name
-    print(f"{winner} is the winner!!")
+    if a_wins > b_wins:
+        print(f"{player_a.name} is the winner!!")
+    elif b_wins > a_wins:
+        print(f"{player_b.name} is the winner!!")
+    else:
+        print(f"It is a draw")
+
     print(f"{player_a.name} wins: {a_wins}")
     print(f"{player_b.name} wins: {b_wins}")
     print(f"Draws: {len(wins['draw'])}")
