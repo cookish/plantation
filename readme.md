@@ -140,7 +140,7 @@ to run a single game, or
 
 to run a series of games and collect overall stats.
 
-Alternatively, install the packaing and dependency management tool [Poetry](https://python-poetry.org/docs/#installation) and run
+Alternatively, install the packaging and dependency management tool [Poetry](https://python-poetry.org/docs/#installation) and run
 
 ```poetry install```
 
