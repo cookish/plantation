@@ -106,7 +106,7 @@ def run_turn(
         print_board(board)
     moves_remaining = 3
 
-    vprint(f"### {player_handler.name} ###  (time={time_remaining:.2f})")
+    vprint(f"### {player_handler.name} ({'+' if sign > 0 else '-'}) ###  (time={time_remaining:.2f})")
     time_taken = 0.
     while moves_remaining > 0:
         player_board = get_player_restricted_board(board, sign)

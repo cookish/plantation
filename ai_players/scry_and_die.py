@@ -26,11 +26,19 @@ class ScryAndDie (Player):
         self.opp_board = np.zeros(board_shape)
         self.turn_scouted = np.zeros(board_shape)
 
-        # randomly select the cycle for scrying, but start with the first col, as that is most important to scry
-        # early to find out where the opponent started
-        first_col = [(r, 1) for r in [1, 4, 7, 9]]
+        # randomly select the cycle for scrying, but start with the opponent's
+        # home column as that is most important to scry early to find out where
+        # the opponent started
+        if sign == 1:
+            opp_home_col = 9
+            remaining_cols = [1, 4, 7]
+        else:
+            opp_home_col = 1
+            remaining_cols = [3, 6, 9]
+
+        first_col = [(r, opp_home_col) for r in [1, 4, 7, 9]]
         random.shuffle(first_col)
-        remaining_board = [(r, c) for c in [3, 6, 9] for r in [1, 4, 7, 9]]
+        remaining_board = [(r, c) for c in [1, 3, 6, 9] for r in remaining_cols]
         random.shuffle(remaining_board)
         self.scry_cycle = cycle(first_col + remaining_board)
 
