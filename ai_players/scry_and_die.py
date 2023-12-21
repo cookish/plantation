@@ -11,8 +11,6 @@ class ScryAndDie (Player):
     turn_scouted = None
     mode = ''
     scry_locations = None
-    cross_rows = np.array([-1, 0, 0, 0, 1])
-    cross_cols = np.array([0, -1, 0, 1, 0])
     cross_coords = np.array([
         [-1, 0], [0, -1], [0, 0], [0, 1], [1, 0]
     ])
@@ -23,6 +21,13 @@ class ScryAndDie (Player):
     ):
         super().__init__(sign, name)
 
+    def start_game(self, board_shape: Tuple[int]):
+        self.opp_board = np.zeros(board_shape)
+        self.turn_scouted = np.zeros(board_shape)
+        self.scry_locations = cycle(
+            [(r, c) for c in [1, 3, 6, 9] for r in [1, 4, 7, 9]]
+        )
+
     def get_move(
             self,
             board: np.ndarray,
@@ -32,14 +37,6 @@ class ScryAndDie (Player):
     ) -> Tuple[str, List[int]]:
 
         first_move = moves_remaining == 3
-
-        # do some initial setup
-        if self.opp_board is None:
-            self.opp_board = np.zeros(board.shape)
-            self.turn_scouted = np.zeros(board.shape)
-            self.scry_locations = cycle(
-                [(r, c) for c in [1, 3, 6, 9] for r in [1, 4, 7, 9]]
-            )
 
         # spend some time in the beginning growing
         if turn <= 5:

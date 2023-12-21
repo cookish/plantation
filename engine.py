@@ -30,6 +30,9 @@ def run_game(
 
     board = np.zeros((num_rows, num_cols), dtype=int)
     initialise_board(board, starting_tiles)
+    player_handler_m.start_game(board.shape)
+    player_handler_p.start_game(board.shape)
+
     time_p = starting_seconds
     time_m = starting_seconds
     for turn in range(1, max_turns+1):
@@ -55,8 +58,13 @@ def run_game(
         vprint(f"{player_handler_m.name} ran out of time!")
         return 100
 
-    else:
-        return score_board(board, player_handler_p, player_handler_m)
+    m_score = sum(board[board < 0])
+    p_score = sum(board[board > 0])
+    player_handler_m.end_game(m_score, p_score)
+    player_handler_p.end_game(p_score, m_score)
+
+    print_score(p_score, m_score, player_handler_p, player_handler_m)
+    return p_score + m_score
 
 
 def initialise_board(board: np.ndarray, starting_tiles: int) -> None:
@@ -67,21 +75,18 @@ def initialise_board(board: np.ndarray, starting_tiles: int) -> None:
     board[random_rows, -1] = -1
 
 
-def score_board(board, player_p: Player, player_m: Player) -> float:
-    total_m = np.sum(board[board < 0])
-    total_p = np.sum(board[board > 0])
-    final_score = total_p + total_m
+def print_score(p_score: int, m_score: int, player_p: Player, player_m: Player) -> None:
+    final_score = p_score + m_score
 
     vprint()
     vprint("================ Final score ================")
-    vprint(f"{player_p.name}: {total_p:+}")
-    vprint(f"{player_m.name}: {total_m:+}")
+    vprint(f"{player_p.name}: {p_score:+}")
+    vprint(f"{player_m.name}: {m_score:+}")
     if final_score == 0:
         vprint("It's a draw!")
     else:
         winner = player_p.name if final_score > 0 else player_m.name
         vprint(f"{winner} wins by {abs(final_score)} points!")
-    return final_score
 
 
 def run_turn(
