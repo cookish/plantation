@@ -61,8 +61,12 @@ class BoardStats:
             vals_str = result.split(' ')[1]
             vals = np.array([int(n) for n in vals_str.split(',')])
             vals[vals * sign > 0] = 0  # only record opponent's squares
-            board[pos[0] - 1:pos[0] + 2, pos[1] - 1:pos[1] + 2, 1] \
-                = abs(vals.reshape((3, 3)))
+            top = max(pos[0] - 1, 0)
+            bot = min(pos[0] + 2, 11)
+            left = max(pos[1] - 1, 0)
+            right = min(pos[1] + 2, 11)
+            board[top:bot, left:right, 1] \
+                = abs(vals.reshape(bot-top, right-left))
             board[pos[0] - 1:pos[0] + 2, pos[1] - 1:pos[1] + 2, 2] = turn
         elif move == 'spray':
             board[pos[0], pos[1], 9] = board[pos[0], pos[1], 7]
