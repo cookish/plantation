@@ -6,8 +6,7 @@ class Player:
     sign = 0
     name = "Player"
 
-    def __init__(self, sign: int, name: Optional[str] = None):
-        self.sign = sign
+    def __init__(self, name: Optional[str] = None):
         if name is not None:
             self.name = name
         else:
@@ -19,7 +18,8 @@ class Player:
     def end_game(self, your_score: int, opponent_score: int):
         pass
 
-    def start_game(self, board_shape: Tuple[int]):
+    def start_game(self, board_shape: Tuple[int], sign: int):
+        self.sign = sign
         pass
 
     def get_move(

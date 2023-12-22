@@ -16,12 +16,13 @@ class ScryAndDie (Player):
     ])
 
     def __init__(
-            self, sign: int,
+            self,
             name: Optional[str] = None
     ):
-        super().__init__(sign, name)
+        super().__init__(name)
 
-    def start_game(self, board_shape: Tuple[int]):
+    def start_game(self, board_shape: Tuple[int], sign: int):
+        super().start_game(board_shape, sign)
         self.opp_board = np.zeros(board_shape)
         self.turn_scouted = np.zeros(board_shape)
         self.scry_locations = cycle(

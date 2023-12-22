@@ -9,7 +9,6 @@ import engine
 def main():
 
     player_handler_a = RandomPlayer(
-        1,
         move_probabilities={
             'fertilise': 0.3,
             'plant': 0.5,
@@ -18,7 +17,6 @@ def main():
             'bomb': 0.05
         }, name="DukeNukem")
     player_handler_b = RandomPlayer(
-        1,
         move_probabilities={
             'fertilise': 10,
             'plant': 10,
