@@ -1,9 +1,5 @@
-from ai_players.random_player import RandomPlayer
-from ai_players.random_player_dumb import RandomPlayerDumb
-from ai_players.scry_and_die import ScryAndDie
-
-
-import engine
+from plantation.ai_players.random_player import RandomPlayer
+import plantation.engine as engine
 
 
 def main():

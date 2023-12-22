@@ -1,9 +1,11 @@
-from player import Player
-from typing import Tuple, List, Optional
+from itertools import cycle
 import random
+from typing import Tuple, List, Optional
+
 import numpy as np
 from scipy.signal import convolve2d
-from itertools import cycle
+
+from plantation.player import Player
 
 
 class ScryAndDie (Player):
