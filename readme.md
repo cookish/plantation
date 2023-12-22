@@ -130,7 +130,11 @@ Return: ```OK #``` or ```error``` (# is the number of plantation levels reduced)
 Affects a single tile. If your opponent has planted the tile, it reduces their plantation level by up to 4 levels. Returns the number of plantation levels reduced.
 
 ## Running the game
-Clone the repo. If you are managing your own python environment, use
+Clone the repo. If you are managing your own python environment, install plantation by running something like
+
+```pip install -e . ```
+
+from the root of the working copy. You can then use
 
 ```python scripts/single_game.py``` 
 
