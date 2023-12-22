@@ -1,17 +1,15 @@
 import numpy as np
 
-from ai_players.random_player import RandomPlayer
-from ai_players.random_player_dumb import RandomPlayerDumb
-from ai_players.scry_and_die import ScryAndDie
-
-import engine
-import time
+from plantation.ai_players.random_player import RandomPlayer
+from plantation.ai_players.scry_and_die import ScryAndDie
+import plantation.engine as engine
 
 
 def main():
     num_games = 100
 
     # player_a = RandomPlayer(
+    #     sign=1,
     #     move_probabilities={
     #         'fertilise': 3,
     #         'plant': 4,
@@ -23,6 +21,7 @@ def main():
     # )
 
     player_b = RandomPlayer(
+        1,
         move_probabilities={
             'fertilise': 10,
             'plant': 10,
@@ -32,6 +31,7 @@ def main():
         }, name="CarlRogers")
 
     player_a = ScryAndDie(
+        sign=-1,
         name="Vaarsuvius"
     )
 
@@ -43,11 +43,13 @@ def main():
     }
 
     print("Running games: [", end="")
-    start_time = time.time()
     for game in range(num_games):
         # print progress bar
         if game % (num_games // 20) == 0:
             print("=", end="")
+
+        player_a.set_sign(1)
+        player_b.set_sign(-1)
 
         score = engine.run_game(
             player_handler_p=player_a,
@@ -92,11 +94,6 @@ def main():
 
     print(f"Average score, if we count scores for {player_b.name} as negative: "
           f"{np.mean(signed_scores):.2f}, (sigma: {np.std(signed_scores):.2f})")
-
-    # Calculate and print the duration
-    end_time = time.time()
-    duration = end_time - start_time
-    print("Seconds:", duration)
 
 
 if __name__ == '__main__':

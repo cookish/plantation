@@ -1,9 +1,12 @@
-from player import Player
-from typing import List
-from include import get_player_restricted_board
-import numpy as np
 import random
 import time
+from typing import List
+
+import numpy as np
+
+from plantation.player import Player
+from plantation.include import get_player_restricted_board
+
 
 moves_required = {
     'fertilise': 1,

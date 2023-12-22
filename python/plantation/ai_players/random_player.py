@@ -1,17 +1,19 @@
-from player import Player
-from typing import Tuple, List, Dict, Optional
 import random
+from typing import Tuple, List, Dict, Optional
+
 import numpy as np
+
+from plantation.player import Player
 
 
 class RandomPlayer (Player):
 
     def __init__(
-            self,
-            move_probabilities: Dict[str, float] = None,
+            self, sign: int,
+            move_probabilities: Dict[str, float],
             name: Optional[str] = None
     ):
-        super().__init__(name)
+        super().__init__(sign, name)
         if move_probabilities is None:
             self.move_probabilities = {
                 'fertilise': 0.2,
