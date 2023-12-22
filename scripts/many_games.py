@@ -33,7 +33,14 @@ def main():
     player_a = ScryAndDie(name="Vaarsuvius")
     player_b = ScryAndDie(name="Xykon")
 
-    engine = Engine()
+    engine = Engine(
+        num_rows=11,
+        num_cols=11,
+        max_turns=100,
+        starting_tiles=3,
+        starting_seconds=1.0,
+        time_increment=0.1
+    )
 
     engine.output = None
     wins = {
@@ -50,13 +57,7 @@ def main():
 
         score = engine.run_game(
             player_handler_p=player_a,
-            player_handler_m=player_b,
-            num_rows=11,
-            num_cols=11,
-            max_turns=100,
-            starting_tiles=3,
-            starting_seconds=1.0,
-            time_increment=0.1
+            player_handler_m=player_b
         )
 
         if score > 0:

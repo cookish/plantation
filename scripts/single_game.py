@@ -1,11 +1,22 @@
 from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.scry_and_die import ScryAndDie
 from plantation.engine import Engine
+from plantation.martin.board_stats_engine import BoardStatsEngine
+from plantation.martin.board_stats import BoardStats
 
 
 def main():
 
-    engine = Engine()
+    board_stats = BoardStats()
+    engine = BoardStatsEngine(
+        board_stats,
+        num_rows=11,
+        num_cols=11,
+        max_turns=100,
+        starting_tiles=3,
+        starting_seconds=1000.0,
+        time_increment=1000
+    )
     # player_handler_a = RandomPlayer(
     #     1,
     #     move_probabilities={
@@ -31,13 +42,7 @@ def main():
     engine.output = 'stdout'
     _score = engine.run_game(
         player_handler_a,
-        player_handler_b,
-        num_rows=11,
-        num_cols=11,
-        max_turns=100,
-        starting_tiles=3,
-        starting_seconds=1000.0,
-        time_increment=1000
+        player_handler_b
     )
 
 
