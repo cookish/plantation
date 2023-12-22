@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "plantation"
+version = "0.1.0"
+description = ""
+authors = []
+readme = "readme.md"
+packages = [
+    {include = "plantation", from = "python"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+numpy = "^1.26.2"
+scipy = "^1.11.4"
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+ipython = "^8.18.1"
+mypy = "^1.7.1"
+
+[tool.poetry.group.experimental]
+optional = true
+
+[tool.poetry.group.experimental.dependencies]
+jaxlib = {version = "0.4.21+cuda12.cudnn89", extras = ["cuda12_pip"], source = "google-jaxlib"}
+jax = {version = "0.4.21", extras = ["cuda12_pip"], source = "google-jax"}
+jaxtyping = "^0.2.24"
+equinox = "^0.11.2"
+optax = "^0.1.7"
+
+[[tool.poetry.source]]
+name = "google-jaxlib"
+url = "https://storage.googleapis.com/jax-releases/jax_cuda_releases.html"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "google-jax"
+url = "https://storage.googleapis.com/jax-releases/jax_releases.html"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "PyPI"
+priority = "default"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

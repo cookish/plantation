@@ -1,8 +1,9 @@
+import random
+from typing import Tuple, List
+
 import numpy as np
 
-from player import Player
-from typing import Tuple, List
-import random
+from plantation.player import Player
 
 
 class RandomPlayerDumb (Player):
