@@ -1,13 +1,13 @@
 import os
 import subprocess
 import json
-from player import Player
+from plantation.player import Player
 
 class PHPPlayerWrapper(Player):
 
-    def __init__(self, name: str):
+    def __init__(self, name: str, php_file: str):
         super().__init__(name)
-        self.php_script_path = os.path.join(os.path.dirname(__file__), "genetic.php")
+        self.php_script_path = os.path.join(os.path.dirname(__file__), php_file)
         self.process = subprocess.Popen(["php", self.php_script_path],
                                         stdin=subprocess.PIPE,
                                         stdout=subprocess.PIPE,
