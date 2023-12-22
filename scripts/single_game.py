@@ -1,15 +1,11 @@
 from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.scry_and_die import ScryAndDie
 from plantation.engine import Engine
-from plantation.martin.board_stats_engine import BoardStatsEngine
-from plantation.martin.board_stats import BoardStats
 
 
 def main():
 
-    board_stats = BoardStats()
-    engine = BoardStatsEngine(
-        board_stats,
+    engine = Engine(
         num_rows=11,
         num_cols=11,
         max_turns=100,
