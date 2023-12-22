@@ -130,15 +130,35 @@ Return: ```OK #``` or ```error``` (# is the number of plantation levels reduced)
 Affects a single tile. If your opponent has planted the tile, it reduces their plantation level by up to 4 levels. Returns the number of plantation levels reduced.
 
 ## Running the game
-Clone the repo, then 
+Clone the repo. If you are managing your own python environment, use
 
-```python single_game.py``` 
+```python scripts/single_game.py``` 
 
 to run a single game, or 
 
-```python many_games.py``` 
+```python scripts/many_games.py``` 
 
 to run a series of games and collect overall stats.
+
+Alternatively, install the packaging and dependency management tool [Poetry](https://python-poetry.org/docs/#installation) and run
+
+```poetry install```
+
+in the directory of your working copy. This will create a virtual environment and install the dependencies. Then run
+
+```poetry shell```
+
+to activate the venv and proceed as above. Or you can use commands like
+
+```poetry run python scripts/single_game.py```
+
+to run commands in the venv without activating it in your shell.
+
+`dev` and `experimental` optional dependecies are included in the pyproject configuration. Install them by running, for example,
+
+```poetry install --with dev```
+
+The `experimental` group _should_ install CUDA libraries and linked JAX and jaxlib, but your mileage may vary.
 
 ### Pre-requisites
 python 3, numpy, scipy (to run ScryOrDie bot)

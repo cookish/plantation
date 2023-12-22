@@ -3,7 +3,8 @@ import numpy as np
 import h5py
 from datetime import datetime
 import os
-from include import get_player_restricted_board
+
+from plantation.include import get_player_restricted_board
 
 
 def create_or_append_hdf5(filename, data, dataset_name):

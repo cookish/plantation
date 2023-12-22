@@ -1,14 +1,16 @@
-from player import Player
-from typing import Tuple, List, Dict, Optional
 import random
+from typing import Tuple, List, Dict, Optional
+
 import numpy as np
+
+from plantation.player import Player
 
 
 class RandomPlayer (Player):
 
     def __init__(
             self,
-            move_probabilities: Dict[str, float] = None,
+            move_probabilities: Dict[str, float],
             name: Optional[str] = None
     ):
         super().__init__(name)

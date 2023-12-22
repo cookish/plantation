@@ -1,11 +1,15 @@
-from player import Player
-from typing import List
-from include import get_player_restricted_board
-import numpy as np
 import random
 import time
-from board_stats import BoardStats
+from typing import List
+
+import numpy as np
+
+from plantation.board_stats import BoardStats
+from plantation.player import Player
+from plantation.include import get_player_restricted_board
+
 board_stats = BoardStats()
+
 
 moves_required = {
     'fertilise': 1,
@@ -30,7 +34,7 @@ def run_game(
         time_increment: float
 ) -> float:
 
-    board = np.zeros((num_rows, num_cols), dtype="byte")
+    board = np.zeros((num_rows, num_cols), dtype=np.byte)
     initialise_board(board, starting_tiles)
     player_handler_m.start_game(board.shape, sign=-1)
     player_handler_p.start_game(board.shape, sign=1)
