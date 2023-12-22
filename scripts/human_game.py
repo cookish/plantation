@@ -3,11 +3,11 @@ from plantation.ai_players.random_player_dumb import RandomPlayerDumb
 from plantation.ai_players.scry_and_die import ScryAndDie
 from plantation.ai_players.human import HumanPlayer
 
-
-import plantation.engine as engine
+from plantation.engine import Engine
 
 
 def main():
+    engine = Engine()
     player_handler_a = HumanPlayer(name="NobbityBop")
     player_handler_b = ScryAndDie(name="Xykon")
 

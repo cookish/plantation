@@ -1,10 +1,11 @@
 from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.scry_and_die import ScryAndDie
-import plantation.engine as engine
+from plantation.engine import Engine
 
 
 def main():
 
+    engine = Engine()
     # player_handler_a = RandomPlayer(
     #     1,
     #     move_probabilities={

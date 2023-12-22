@@ -2,7 +2,7 @@ import numpy as np
 
 from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.scry_and_die import ScryAndDie
-import plantation.engine as engine
+from plantation.engine import Engine
 
 
 def main():
@@ -32,6 +32,8 @@ def main():
 
     player_a = ScryAndDie(name="Vaarsuvius")
     player_b = ScryAndDie(name="Xykon")
+
+    engine = Engine()
 
     engine.output = None
     wins = {
