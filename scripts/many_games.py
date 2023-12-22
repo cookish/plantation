@@ -33,7 +33,7 @@ def main():
     player_a = ScryAndDie(name="Vaarsuvius")
     player_b = ScryAndDie(name="Xykon")
 
-    engine.verbose = False
+    engine.output = None
     wins = {
         player_a.name: [],
         player_b.name: [],

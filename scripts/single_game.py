@@ -27,7 +27,7 @@ def main():
     player_handler_a = ScryAndDie(name="Xykon")
     player_handler_b = ScryAndDie(name="Varsuvius")
 
-    engine.verbose = True
+    engine.output = 'stdout'
     _score = engine.run_game(
         player_handler_a,
         player_handler_b,

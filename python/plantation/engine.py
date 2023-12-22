@@ -6,7 +6,7 @@ import numpy as np
 
 from plantation.board_stats import BoardStats
 from plantation.player import Player
-from plantation.include import get_player_restricted_board
+from plantation.include import get_player_restricted_board, display_board_text
 
 board_stats = BoardStats()
 
@@ -20,8 +20,8 @@ moves_required = {
     'bomb': 2
 }
 bomb_damage = 4
-verbose = True
-
+output = "stdout"
+outfile = None
 
 def run_game(
         player_handler_p: Player,
@@ -33,6 +33,10 @@ def run_game(
         starting_seconds: float,
         time_increment: float
 ) -> float:
+
+    if output and output != "stdout":
+        global outfile
+        outfile = open(output, "w")
 
     board = np.zeros((num_rows, num_cols), dtype=np.byte)
     initialise_board(board, starting_tiles)
@@ -106,8 +110,14 @@ def run_turn(
 ) -> float:
     global board_stats
 
-    if verbose:
-        print_board(board)
+    total_p = np.sum(board[board > 0])
+    total_m = np.sum(board[board < 0])
+    vprint(f"Score: {total_p:+}, {total_m:+}  ({total_p + total_m:+})")
+
+    if output is not None:
+        board_str = display_board_text(board)
+        vprint(board_str)
+
     moves_remaining = 3
 
     vprint(f"### {player_handler.name} ({'+' if sign > 0 else '-'}) ###  (time={time_remaining:.2f})")
@@ -256,33 +266,11 @@ def do_move(
         return do_bomb(pos, sign, board)
 
 
-def print_board(board):
-    num_rows = board.shape[0]
-    num_cols = board.shape[1]
-    total_p = np.sum(board[board > 0])
-    total_m = np.sum(board[board < 0])
-    print(f"Score: {total_p:+}, {total_m:+}  ({total_p + total_m:+})")
-    print("     " + "    ".join([str(i) for i in range(num_cols)]))
-    print("   " + "=" * (num_cols * 5 + 1))
-    for row in range(num_rows):
-
-        print(f"{row:>2} |", end="")
-
-        for col in range(num_cols):
-            if board[row][col] == 0:
-                display = ""
-            else:
-                display = "-" if board[row][col] < 0 else "+"
-                display += str(abs(board[row][col]))
-
-            # print display with string padding up to length 3
-            # print(display.center(4) + "|", end="")
-            print(f"{display:^4}|", end="")
-
-        print()
-    print("   " + "=" * (num_cols * 5 + 1))
-
-
 def vprint(*args, **kwargs):
-    if verbose:
+    if not output:
+        return
+    elif output == "stdout":
+        print(*args, **kwargs)
+    else:
+        kwargs['file'] = outfile
         print(*args, **kwargs)
