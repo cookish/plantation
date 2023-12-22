@@ -5,8 +5,8 @@ from player import Player
 
 class PHPPlayerWrapper(Player):
 
-    def __init__(self, sign: int, name: str):
-        super().__init__(sign, name)
+    def __init__(self, name: str):
+        super().__init__(name)
         self.php_script_path = os.path.join(os.path.dirname(__file__), "genetic.php")
         self.process = subprocess.Popen(["php", self.php_script_path],
                                         stdin=subprocess.PIPE,
@@ -14,8 +14,7 @@ class PHPPlayerWrapper(Player):
                                         text=True)
         self.send_call( {
             "function": "init",
-            "name": name,
-            "sign": sign
+            "name": name
         } )
 
     def send_call(self, data):
@@ -27,9 +26,11 @@ class PHPPlayerWrapper(Player):
         #print(response)
         return json.loads(response)
 
-    def start_game(self, board_size):
+    def start_game(self, board_size, sign):
+        super().start_game(board_size, sign)
         data = {
-            "function": "start_game"
+            "function": "start_game",
+            "sign": sign
         }
         return self.send_call(data)
 
