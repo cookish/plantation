@@ -9,7 +9,6 @@ def main():
     num_games = 100
 
     # player_a = RandomPlayer(
-    #     sign=1,
     #     move_probabilities={
     #         'fertilise': 3,
     #         'plant': 4,
@@ -21,7 +20,6 @@ def main():
     # )
 
     player_b = RandomPlayer(
-        1,
         move_probabilities={
             'fertilise': 10,
             'plant': 10,
@@ -31,7 +29,6 @@ def main():
         }, name="CarlRogers")
 
     player_a = ScryAndDie(
-        sign=-1,
         name="Vaarsuvius"
     )
 
@@ -47,9 +44,6 @@ def main():
         # print progress bar
         if game % (num_games // 20) == 0:
             print("=", end="")
-
-        player_a.set_sign(1)
-        player_b.set_sign(-1)
 
         score = engine.run_game(
             player_handler_p=player_a,
