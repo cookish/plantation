@@ -3,12 +3,13 @@ import numpy as np
 from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.scry_and_die import ScryAndDie
 from plantation.ai_players.paulc.php_player_wrapper import PHPPlayerWrapper
+from plantation.martin.ai_players.scry_and_die_T800 import ScryAndDieT800
 from plantation.engine import Engine
 import time
 
 
 def main():
-    num_games = 100
+    num_games = 1000
 
     # player_a = RandomPlayer(
     #     move_probabilities={
@@ -32,7 +33,7 @@ def main():
     #     }, name="CarlRogers")
 
     player_a = ScryAndDie(name="Vaarsuvius")
-    player_b = ScryAndDie(name="Xykon")
+    player_b = ScryAndDieT800(name="Arnie")
 
     engine = Engine(
         num_rows=11,
@@ -104,6 +105,7 @@ def main():
     end_time = time.time()
     duration = end_time - start_time
     print("Seconds:", duration)
+
 
 if __name__ == '__main__':
     main()
