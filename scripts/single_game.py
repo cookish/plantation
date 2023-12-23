@@ -1,27 +1,38 @@
 from plantation.ai_players.random_player import RandomPlayer
+from plantation.ai_players.random_player_dumb import RandomPlayerDumb
+from plantation.ai_players.scry_and_die import ScryAndDie
+from plantation.ai_players.paulc.php_player_wrapper import PHPPlayerWrapper
 import plantation.engine as engine
-
 
 def main():
 
-    player_handler_a = RandomPlayer(
-        move_probabilities={
-            'fertilise': 0.3,
-            'plant': 0.5,
-            'colonise': 0.1,
-            'spray': 0.05,
-            'bomb': 0.05
-        }, name="DukeNukem")
-    player_handler_b = RandomPlayer(
-        move_probabilities={
-            'fertilise': 10,
-            'plant': 10,
-            'colonise': 1,
-            'spray': 2,
-            'bomb': 1
-        }, name="CarlRogers")
+    #player_handler_a = RandomPlayer(
+    #    move_probabilities={
+    #        'fertilise': 0.3,
+    #        'plant': 0.5,
+    #        'colonise': 0.1,
+    #        'spray': 0.05,
+    #        'bomb': 0.05
+    #    }, name="DukeNukem")
+    #player_handler_b = RandomPlayer(
+    #    move_probabilities={
+    #        'fertilise': 10,
+    #        'plant': 10,
+    #        'colonise': 1,
+    #        'spray': 2,
+    #        'bomb': 1
+    #    }, name="CarlRogers")
     # player_handler_b = RandomPlayerDumb(name="Dumb")
-    # player_handler_b = ScryAndDie(name="Varsuvius")
+    player_handler_b = ScryAndDie(name="Varsuvius")
+    player_handler_a = PHPPlayerWrapper(
+       name="Crocodilian",
+       php_file="genetic.php"
+    )
+
+    #player_handler_b = PHPPlayerWrapper(
+    #   name="AvianDinosaur",
+    #   php_file="genetic.php"
+    #)
 
     engine.verbose = True
     _score = engine.run_game(
