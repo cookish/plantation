@@ -1,6 +1,7 @@
 from typing import Tuple, List, Optional
-
 import numpy as np
+import random
+import string
 
 
 class Player:
@@ -11,17 +12,13 @@ class Player:
         if name is not None:
             self.name = name
         else:
-            self.name = "Plus" if sign > 0 else "Minus"
-
-    def set_sign(self, sign):
-        self.sign = sign
+            self.name = "Player " + random.choice(string.ascii_lowercase)
 
     def end_game(self, your_score: int, opponent_score: int):
         pass
 
     def start_game(self, board_shape: Tuple[int], sign: int):
         self.sign = sign
-        pass
 
     def get_move(
             self,

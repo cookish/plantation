@@ -3,7 +3,7 @@ import numpy as np
 from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.scry_and_die import ScryAndDie
 from plantation.ai_players.paulc.php_player_wrapper import PHPPlayerWrapper
-import plantation.engine as engine
+from plantation.engine import Engine
 import time
 
 
@@ -21,20 +21,29 @@ def main():
     #     name="DukeNukem"
     # )
 
-    player_b = RandomPlayer(
-        move_probabilities={
-            'fertilise': 10,
-            'plant': 10,
-            'colonise': 1,
-            'spray': 2,
-            'bomb': 1
-        }, name="CarlRogers")
+    # player_b = RandomPlayer(
+    #     1,
+    #     move_probabilities={
+    #         'fertilise': 10,
+    #         'plant': 10,
+    #         'colonise': 1,
+    #         'spray': 2,
+    #         'bomb': 1
+    #     }, name="CarlRogers")
 
-    player_a = ScryAndDie(
-        name="Vaarsuvius"
+    player_a = ScryAndDie(name="Vaarsuvius")
+    player_b = ScryAndDie(name="Xykon")
+
+    engine = Engine(
+        num_rows=11,
+        num_cols=11,
+        max_turns=100,
+        starting_tiles=3,
+        starting_seconds=1.0,
+        time_increment=0.1
     )
 
-    engine.verbose = False
+    engine.output = None
     wins = {
         player_a.name: [],
         player_b.name: [],
@@ -45,18 +54,12 @@ def main():
     start_time = time.time()
     for game in range(num_games):
         # print progress bar
-        if game % (num_games // 20) == 0:
+        if game % max((num_games // 20), 1) == 0:
             print("=", end="")
 
         score = engine.run_game(
             player_handler_p=player_a,
-            player_handler_m=player_b,
-            num_rows=11,
-            num_cols=11,
-            max_turns=100,
-            starting_tiles=3,
-            starting_seconds=1.0,
-            time_increment=0.1
+            player_handler_m=player_b
         )
 
         if score > 0:
@@ -79,8 +82,13 @@ def main():
 
     a_wins = len(wins[player_a.name])
     b_wins = len(wins[player_b.name])
-    winner = player_a.name if a_wins > b_wins else player_b.name
-    print(f"{winner} is the winner!!")
+    if a_wins > b_wins:
+        print(f"{player_a.name} is the winner!!")
+    elif b_wins > a_wins:
+        print(f"{player_b.name} is the winner!!")
+    else:
+        print(f"It is a draw")
+
     print(f"{player_a.name} wins: {a_wins}")
     print(f"{player_b.name} wins: {b_wins}")
     print(f"Draws: {len(wins['draw'])}")
