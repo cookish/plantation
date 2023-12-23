@@ -4,14 +4,23 @@ from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.random_player_dumb import RandomPlayerDumb
 from plantation.ai_players.scry_and_die import ScryAndDie
 from plantation.ai_players.paulc.php_player_wrapper import PHPPlayerWrapper
-
-import plantation.engine as engine
+from plantation.engine import Engine
 import time
 
 
 def main():
     # this should be even to allow players to each get the same number of first turns
     num_games_per_pair = 20
+
+    engine = Engine(
+        num_rows=11,
+        num_cols=11,
+        max_turns=100,
+        starting_tiles=3,
+        starting_seconds=1000.0,
+        time_increment=1000
+    )
+    engine.output = None
 
     players = [
         RandomPlayer(
@@ -42,7 +51,7 @@ def main():
             php_file="genetic.php"
         )
     ];
-    engine.verbose = False
+
     wins = {}
     for p in players:
         wins[p.name] = []
@@ -63,12 +72,6 @@ def main():
                 score = engine.run_game(
                     player_handler_p=players[p1],
                     player_handler_m=players[p2],
-                    num_rows=11,
-                    num_cols=11,
-                    max_turns=100,
-                    starting_tiles=3,
-                    starting_seconds=1.0,
-                    time_increment=0.1
                 )
 
                 if score > 0:
