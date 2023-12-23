@@ -64,7 +64,7 @@ class Engine:
             if time_m < 0:
                 break
 
-        m_score, p_score = self.score_game()
+        p_score, m_score = self.score_game()
         self.end_of_game(p_score, m_score, player_handler_p, player_handler_m, time_p, time_m)
 
         return p_score + m_score
