@@ -50,12 +50,12 @@ def main():
         'draw': []
     }
 
-    print("Running games: [", end="")
+    print("Running games: [", end="", flush=True)
     start_time = time.time()
     for game in range(num_games):
         # print progress bar
         if game % max((num_games // 20), 1) == 0:
-            print("=", end="")
+            print("=", end="", flush=True)
 
         score = engine.run_game(
             player_handler_p=player_a,

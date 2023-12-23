@@ -62,5 +62,16 @@ class HumanPlayer (Player):
         return move, coords
 
     def handle_move_result(self, move, turn, pos, result):
+        if move == 'scout':
+            code = result.split()[0]
+            print(code)
+            if code == 'OK':
+                tile_scores = result.split()[1].split(',')
+                for row in range(3):
+                    for col in range(3):
+                        print(f"{tile_scores[row * 3 + col]:>3}", end="")
+                    print()
+
+            print()
         print(f"Result: {result}")
         sleep(0.15)
