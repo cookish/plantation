@@ -16,6 +16,9 @@ class ScryAndDieT800 (Player):
     cross_coords = np.array([
         [-1, 0], [0, -1], [0, 0], [0, 1], [1, 0]
     ])
+    spray_kernel = np.array([[0, 1, 0],
+                             [1, 1, 1],
+                             [0, 1, 0]])
 
     def __init__(
             self,
@@ -109,11 +112,8 @@ class ScryAndDieT800 (Player):
         bomb_score = min(np.max(estimated_board), 4)
 
         spray_board = np.where(estimated_board > 1, 1, estimated_board)
-        spray_kernel = np.array([[0, 1, 0],
-                                 [1, 1, 1],
-                                 [0, 1, 0]])
 
-        spray_scores = convolve2d(spray_board, spray_kernel,
+        spray_scores = convolve2d(spray_board, self.spray_kernel,
                                   mode='same', boundary='fill', fillvalue=0)
         spray_score = np.max(spray_scores)
         if bomb_score > spray_score:
@@ -176,6 +176,29 @@ class ScryAndDieT800 (Player):
                 known_opp_tiles = set(tuple(k) for k in np.argwhere(self.opp_board != 0))
                 filtered_options = plant_options - known_opp_tiles
 
+                # now we want to sort by the maximum damage our opponent could do to us with a spray
+                # count 1, 2 and 3 as the same (don't want to discourage a line) but penalise 4 and 5
+                spray_board = np.where(board != 0, 1, board)
+                spray_damage_board = convolve2d(spray_board, self.spray_kernel,
+                                                mode='same', boundary='fill', fillvalue=0)
+
+                max_damage_scores = [
+                    max(
+                        spray_damage_board[option[0] + offset[0], option[1] + offset[1]]
+                        for offset in self.cross_coords
+                        if 0 <= option[0] + offset[0] < rows and 0 <= option[1] + offset[1] < cols
+                    )
+                    for option in filtered_options
+                ]
+
+                # if opponent can currently do 2 damage with a spray, once we plant here it will increase to 3. This
+                # is the ceiling: anything more than this we want to discourage
+                max_allowable_damage = 2
+                max_damage_scores = [max(s, max_allowable_damage) for s in max_damage_scores]
+                best_max_damage_score = min(max_damage_scores)
+                filtered_options = [c[0] for c in zip(filtered_options, max_damage_scores)
+                                    if c[1] == best_max_damage_score]
+
                 if len(filtered_options) > 0:
                     return move, random.choice(list(filtered_options))
                 else:
@@ -188,7 +211,10 @@ class ScryAndDieT800 (Player):
             non_zero_tiles = np.argwhere(board != 0)
             if len(non_zero_tiles) > 0:
                 # we want to sort by score mod 4 (ascending)
-                return move, random.choice(non_zero_tiles)
+                mod_scores = [abs(board[c[0], c[1]]) % 4 for c in non_zero_tiles]
+                best_score = min(mod_scores)
+                filtered_non_zero_tiles = [c[0] for c in zip(non_zero_tiles, mod_scores) if c[1] == best_score]
+                return move, random.choice(filtered_non_zero_tiles)
 
         if move == 'colonise':
             if len(multi_tiles) > 0 and len(zero_tiles) > 0:
@@ -197,7 +223,7 @@ class ScryAndDieT800 (Player):
                 return move, [target_row, target_col, source_row, source_col]
 
         # there is nowhere we can move...
-        return 'scout', [0, 0]
+        return 'scout', [5, 5]
 
     def handle_move_result(self, move, turn, pos, result):
         code = result.split(' ')[0]

@@ -187,7 +187,7 @@ class ScryAndDie (Player):
                 return move, [target_row, target_col, source_row, source_col]
 
         # there is nowhere we can move...
-        return 'scout', [0, 0]
+        return 'scout', [5, 5]
 
     def handle_move_result(self, move, turn, pos, result):
         code = result.split(' ')[0]
