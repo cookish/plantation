@@ -46,6 +46,10 @@ class Genetic
     protected $friendlyDistances = [];
     protected $enemyDistances = [];
 
+    protected $moveTypeCounts = [];
+
+    protected $moveTypes = ['plant', 'fertilise', 'scout', 'colonise', 'bomb', 'spray'];
+
     const NUM_SPECIES = 10;
     const GAMES_PER_EVOLVE = 10;
 
@@ -53,11 +57,15 @@ class Genetic
         $this->name = $name;
         $this->friendlyBoard = array_fill(0, 11, array_fill(0, 11, 0));
         $this->enemyBoard = array_fill(0, 11, array_fill(0, 11, null));
-        foreach (['plant', 'fertilise', 'scout', 'colonise', 'bomb'] as $move) {
+        foreach ($this->moveTypes as $move) {
+            if ($move == 'spray') continue; //irrelevant
             $this->friendlyDistanceWeights[$move] = array_fill(0, 11, array_fill(0, 11, 0));
             $this->enemyDistanceWeights[$move] = array_fill(0, 11, array_fill(0, 11, 0));
         }
         $this->sign = $sign;
+        foreach ($this->moveTypes as $move) {
+            $this->moveTypeCounts[$move] = 0;
+        }
 
         // load weights
         $filename = __DIR__ . '/' . escapeshellcmd($name) . '.json';
@@ -163,6 +171,7 @@ class Genetic
             $this->generateSprayMoves();
             $this->generateBombMoves();
         }
+        $this->moveTypeCounts[$this->currentMove[0]]++;
         return $this->currentMove;
     }
 
@@ -394,6 +403,13 @@ class Genetic
         $yourScore = abs($yourScore);
         $opponentScore = abs($opponentScore);
         $scorediff = abs($yourScore) - abs($opponentScore);
+        // adjust scorediff down if the player didn't use all moves at least once
+        foreach ($this->moveTypes as $move) {
+            if ($this->moveTypeCounts[$move] < 5) {
+                $scorediff -= 10 * (5 - $this->moveTypeCounts[$move]);
+            }
+        }
+
         $this->lineageJson['species'][$this->speciesNumber]['scorediff'] += $scorediff;
         $this->lineageJson['nextSpeciesToPlay'] = 1 + ($this->lineageJson['nextSpeciesToPlay'] ?? 0);
         if ($this->lineageJson['nextSpeciesToPlay'] >= self::NUM_SPECIES) {
@@ -436,6 +452,16 @@ class Genetic
         $f = fopen($filename, 'w');
         fwrite($f, json_encode($this->lineageJson, JSON_PRETTY_PRINT));
         fclose($f);
+
+        // dump 4% of games, moves played
+        if (mt_rand(0, 24) == 1) {
+            $st = '';
+            foreach ($this->moveTypeCounts as $move => $count) {
+                $st .= "$move: $count; ";
+            }
+            $this->log($this->name . " snapshot of moves used: " . substr($st, 0, -2));
+        }
+
         return '';
     }
 
@@ -593,6 +619,7 @@ while ($line = fgets(STDIN)) {
             $player->endGame($data['your_score'], $data['opponent_score']);
             break;
     }
+    $prevData = $data;
     fputs(STDOUT, json_encode($response) . "\n");
 }
 
