@@ -130,7 +130,11 @@ Return: ```OK #``` or ```error``` (# is the number of plantation levels reduced)
 Affects a single tile. If your opponent has planted the tile, it reduces their plantation level by up to 4 levels. Returns the number of plantation levels reduced.
 
 ## Running the game
-Clone the repo. If you are managing your own python environment, use
+Clone the repo. If you are managing your own python environment, install plantation by running something like
+
+```pip install -e . ```
+
+from the root of the working copy. You can then use
 
 ```python scripts/single_game.py``` 
 
@@ -207,3 +211,6 @@ score of 100 (or -100).
 If enough people want to do this, we can make a dummy Python class that sends
 requests for moves over Unix socket connections, then you can make a listener
 in Java / c++ / INTERCAL / whatever.
+
+Alternately, Paul is cooking (hah) up a pipeline to communicate to PHP via 
+standard in/out, so sockets aren't the only option.
