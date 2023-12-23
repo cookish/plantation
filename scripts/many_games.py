@@ -2,14 +2,15 @@ import numpy as np
 
 from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.scry_and_die import ScryAndDie
+from plantation.ai_players.paulc.php_player_wrapper import PHPPlayerWrapper
 from plantation.engine import Engine
+import time
 
 
 def main():
     num_games = 100
 
     # player_a = RandomPlayer(
-    #     sign=1,
     #     move_probabilities={
     #         'fertilise': 3,
     #         'plant': 4,
@@ -50,6 +51,7 @@ def main():
     }
 
     print("Running games: [", end="")
+    start_time = time.time()
     for game in range(num_games):
         # print progress bar
         if game % max((num_games // 20), 1) == 0:
@@ -98,6 +100,10 @@ def main():
     print(f"Average score, if we count scores for {player_b.name} as negative: "
           f"{np.mean(signed_scores):.2f}, (sigma: {np.std(signed_scores):.2f})")
 
+    # Calculate and print the duration
+    end_time = time.time()
+    duration = end_time - start_time
+    print("Seconds:", duration)
 
 if __name__ == '__main__':
     main()

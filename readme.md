@@ -208,9 +208,4 @@ When a player runs out of time, the game ends and their opponent gets a
 score of 100 (or -100).
 
 # Other programming languages
-If enough people want to do this, we can make a dummy Python class that sends
-requests for moves over Unix socket connections, then you can make a listener
-in Java / c++ / INTERCAL / whatever.
-
-Alternately, Paul is cooking (hah) up a pipeline to communicate to PHP via 
-standard in/out, so sockets aren't the only option.
+PHP support (I know, right) is in paulc/php_player_wrapper.py, using STDIN and STDOUT to communicate with a process in running a PHP file. This can be replicated for other languages. 

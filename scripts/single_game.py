@@ -1,7 +1,7 @@
 from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.scry_and_die import ScryAndDie
+from plantation.ai_players.paulc.php_player_wrapper import PHPPlayerWrapper
 from plantation.engine import Engine
-
 
 def main():
 
@@ -33,7 +33,7 @@ def main():
     #     }, name="CarlRogers")
     # player_handler_b = RandomPlayerDumb(-1, name="Dumb")
     player_handler_a = ScryAndDie(name="Xykon")
-    player_handler_b = ScryAndDie(name="Varsuvius")
+    player_handler_b = PHPPlayerWrapper(name="Crocodilian", php_file="genetic.php")
 
     engine.output = 'stdout'
     _score = engine.run_game(
