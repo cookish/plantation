@@ -218,8 +218,11 @@ class ScryAndDieT800 (Player):
 
         if move == 'colonise':
             if len(multi_tiles) > 0 and len(zero_tiles) > 0:
+                combined_board = board + self.opp_board
+                target_options = np.argwhere(np.abs(combined_board) == 0)
+
                 source_row, source_col = random.choice(multi_tiles)
-                target_row, target_col = random.choice(zero_tiles)
+                target_row, target_col = random.choice(target_options)
                 return move, [target_row, target_col, source_row, source_col]
 
         # there is nowhere we can move...
