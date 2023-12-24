@@ -19,9 +19,6 @@ class AbstractAgent[State, Action, ScanX](Module, strict=True):
     ) -> Action: ...
 
 
-type Agent[State, Action, ScanX] = AbstractAgent[State, Action, ScanX]
-
-
 class StateEnvelope[State, Action](Module, strict=True):
     agent_dynamic_tree: PyTree
     agent_static_tree: PyTree = eqx.field(static=True)
@@ -41,13 +38,14 @@ type DynamicsFn[State, Action, ScanX, ScanY] = Callable[
 
 
 class Simulator[
-    State, Action, ScanX, ScanXS, ScanY, ScanYS
+    Agent: AbstractAgent, State, Action,
+    ScanX, ScanXS, ScanY, ScanYS
 ](Module, strict=True):
     dynamics: DynamicsFn[State, Action, ScanX, ScanY]
 
     def __call__(
         self,
-        agent: Agent[State, Action, ScanX],
+        agent: Agent,
         state: State,
         exo_state: ExoState[ScanX, ScanXS],
     ) -> ScanYS:
@@ -64,23 +62,23 @@ class Simulator[
         return result  # type: ignore
 
 
-type TrainStepFn[TrainState, State, Action, ScanX] = Callable[
-    [Agent[State, Action, ScanX], TrainState, PRNGKeyArray | None],
-    tuple[Agent[State, Action, ScanX], TrainState],
+type TrainStepFn[Agent: AbstractAgent, TrainState] = Callable[
+    [Agent, TrainState, PRNGKeyArray | None],
+    tuple[Agent, TrainState],
 ]
 
 
 # TODO Maybe this could just be a function `train` that receives train_step
-class Trainer[TrainState, State, Action, ScanX](Module, strict=True):
-    train_step: TrainStepFn[TrainState, State, Action, ScanX]
+class Trainer[Agent: AbstractAgent, TrainState](Module, strict=True):
+    train_step: TrainStepFn[Agent, TrainState]
 
     def __call__(
         self,
-        agent: Agent[State, Action, ScanX],
+        agent: Agent,
         train_state: TrainState,
         steps: int,
         rng_key: PRNGKeyArray | None,
-    ) -> tuple[Agent[State, Action, ScanX], TrainState]:
+    ) -> tuple[Agent, TrainState]:
         if rng_key is None:
             step_keys = [None] * steps
         else:

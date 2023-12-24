@@ -46,7 +46,7 @@ type BoardUIntBatch = UInt[Array, "batch_size height width"]
 type BoardUIntSeqBatch = UInt[Array, "batch_size sim_steps height width"]
 
 
-class LearningAgent[State](AbstractAgent[State, ActionPMF, BoardUInt]):
+class LearningAgent(AbstractAgent[None, ActionPMF, BoardUInt]):
     trainable_map: PyTree # TODO How to say "callable Module"?
     hyperparams: dict = eqx.field(static=True)
 
@@ -101,7 +101,7 @@ class LearningAgent[State](AbstractAgent[State, ActionPMF, BoardUInt]):
 
     def react(
         self,
-        state: State,
+        state: None,
         exo_state: BoardUInt,
     ) -> ActionPMF:
         return self.trainable_map(exo_state)
@@ -111,7 +111,7 @@ def dynamics(
     state_envelope: StateEnvelope[None, ActionPMF],
     exo_state: BoardUInt,
 ) -> tuple[StateEnvelope[None, ActionPMF], ActionPMF]:
-    agent: LearningAgent[None] = eqx.combine(
+    agent: LearningAgent = eqx.combine(
         state_envelope.agent_dynamic_tree,
         state_envelope.agent_static_tree,
     )
@@ -133,7 +133,7 @@ def score_action_legal_uniform(
     - probabiliy mass on illegal moves
     - non-uniform density on legal moves
 
-    TODO Devise a score less sensitive to then number of occupied cells.
+    TODO Devise a score less sensitive to the number of occupied cells
     """
     legal_actions = allowed_actions(board)
     good_pm = jnp.where(legal_actions, action, 0.0)
@@ -150,21 +150,22 @@ def score_action_legal_uniform(
 
 
 def make_train_step(
-    agent: LearningAgent[None],
+    agent: LearningAgent,
     sim_fn: Simulator[
-        None, ActionPMF, BoardUInt, BoardUIntSeq, ActionPMF, ActionPMFs
+        LearningAgent, None, ActionPMF,
+        BoardUInt, BoardUIntSeq, ActionPMF, ActionPMFs
     ],
     optimiser: GradientTransformation,
     sim_steps: int,
     batch_size: int,
     lam: float,
 ) -> tuple[
-        TrainStepFn[OptState, None, ActionPMF, BoardUInt],
+        TrainStepFn[LearningAgent, OptState],
         OptState
     ]:
     @eqx.filter_grad
     def compute_loss(
-        agent: LearningAgent[None],
+        agent: LearningAgent,
         exo_state: ExoState[BoardUIntBatch, BoardUIntSeqBatch],
     ) -> Scalar:
         actions = eqx.filter_vmap(
@@ -184,10 +185,10 @@ def make_train_step(
 
     @eqx.filter_jit
     def train_step(
-        agent: LearningAgent[None],
+        agent: LearningAgent,
         train_state: OptState,
         rng_key: PRNGKeyArray,
-    ) -> tuple[LearningAgent[None], OptState]:
+    ) -> tuple[LearningAgent, OptState]:
         k1, k2 = jr.split(rng_key)
 
         exo_state = ExoState[BoardUIntBatch, BoardUIntSeqBatch](
@@ -218,7 +219,7 @@ def make_train_step(
 
 
 def test(
-    agent: LearningAgent[None],
+    agent: LearningAgent,
     lam: float,
     rng_key: PRNGKeyArray,
     batch_size: int = 10000,
@@ -318,16 +319,17 @@ def train_cmd(
             "mlp_depth": mlp_depth,
         }
         key, subkey = jr.split(key)
-        agent = LearningAgent[None].make_dev_agent(**hyperparams, key=subkey)
+        agent = LearningAgent.make_dev_agent(**hyperparams, key=subkey)
     else:
-        agent = LearningAgent[None].load(load)
+        agent = LearningAgent.load(load)
 
     key, subkey = jr.split(key)
     metric = test(agent, lambda_, subkey)
     print(f"{'Before training:':16}", f"{metric:4.6f}")
 
     simulate = Simulator[
-        None, ActionPMF, BoardUInt, BoardUIntSeq, ActionPMF, ActionPMFs
+        LearningAgent, None, ActionPMF,
+        BoardUInt, BoardUIntSeq, ActionPMF, ActionPMFs,
     ](dynamics)
 
     optimiser = optax.adamw(learning_rate)
@@ -340,18 +342,16 @@ def train_cmd(
         lam=lambda_,
     )
 
-    train = Trainer[
-        PyTree, None, ActionPMF, BoardUInt,
-    ](train_step)
+    train = Trainer[LearningAgent, OptState](train_step)
 
     key, subkey = jr.split(key)
     agent, opt_state = train(agent, opt_state, train_steps, subkey)
 
     if save is not None:
-        agent.save(save)  # type: ignore  # TODO Bad design by me anyway
+        agent.save(save)
 
     key, subkey = jr.split(key)
-    metric = test(agent, lambda_, subkey)  # type: ignore  # TODO
+    metric = test(agent, lambda_, subkey)
     print(f"{'After training:':16}", f"{metric:4.6f}")
 
 
