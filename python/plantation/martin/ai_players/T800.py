@@ -7,18 +7,18 @@ from scipy.signal import convolve2d
 from plantation.player import Player
 
 
-def s_curve(x):
+def s_curve(x, factor: float = 3):
     # from https://stats.stackexchange.com/a/289477
     if x == 1 or x == 0:
         return x
     else:
-        return 1 / (1 + (x / (1 - x)) ** -3)
+        return 1 / (1 + (x / (1 - x)) ** (-factor))
 
 
-def s_curve_probs(probs: List[float]):
+def s_curve_probs(probs: List[float], factor: float = 3):
     # from https://stats.stackexchange.com/a/289477
     total = sum(probs)
-    scaled_probs = [s_curve(p / total) for p in probs]
+    scaled_probs = [s_curve(p / total, factor) for p in probs]
     new_total = sum(scaled_probs)
     new_probs = [p / new_total for p in scaled_probs]
     return new_probs
@@ -40,9 +40,16 @@ class T800 (Player):
 
     def __init__(
             self,
-            name: Optional[str] = None
+            name: Optional[str] = None,
+            scout_propensity: float = 1,
+            initial_turns_of_growth: int = 7,
+            s_curve_factor: float = 3
+
     ):
         super().__init__(name)
+        self.scout_score_normalisation = 5 * 9 * 10 / scout_propensity
+        self.initial_turns_of_growth = initial_turns_of_growth
+        self.s_curve_factor = s_curve_factor
 
     def start_game(self, board_shape: Tuple[int], sign: int):
         super().start_game(board_shape, sign)
@@ -58,10 +65,10 @@ class T800 (Player):
     ) -> Tuple[str, List[int]]:
 
         # spend some time in the beginning growing
-        if turn <= 6:
+        if turn <= self.initial_turns_of_growth:
             return self.get_grow(board, moves_remaining)
 
-        else:  # self.turn >= 7
+        else:  # self.turn >= self.turns_of_growth
             attack_score, attack_move, attack_targets = \
                 self.get_best_offensive_move(self.opp_board)
 
@@ -80,7 +87,8 @@ class T800 (Player):
                 if moves_remaining < 2:
                     attack_payoff = 0
 
-                scout_chance, grow_chance, attack_chance = s_curve_probs([scout_payoff, grow_payoff, attack_payoff])
+                scout_chance, grow_chance, attack_chance = s_curve_probs(
+                    [scout_payoff, grow_payoff, attack_payoff], self.s_curve_factor)
 
                 r = random.random()
                 if r < scout_chance:
@@ -100,7 +108,6 @@ class T800 (Player):
                          ) -> Tuple[float, List[List[int]]]:
 
         # 9 squares in the middle of the board, last scouted 10 turns ago
-        scout_score_normalisation = 5 * 9 * 10
         rows, cols = board.shape
         scout_board = np.tile(np.arange(1, cols + 1), (rows, 1))
         if self.sign < 0:
@@ -119,7 +126,7 @@ class T800 (Player):
 
         best_score = np.max(scout_scores)
         best_scouts = np.argwhere(scout_scores == best_score).tolist()
-        scout_payoff = best_score / scout_score_normalisation
+        scout_payoff = best_score / self.scout_score_normalisation
         # prefer scouting at start of turn: 3->1, 2->0.8, 1->0.6
         scout_payoff *= 0.2 * moves_remaining + 0.4
         return scout_payoff, best_scouts

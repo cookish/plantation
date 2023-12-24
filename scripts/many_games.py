@@ -4,13 +4,12 @@ from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.scry_and_die import ScryAndDie
 from plantation.ai_players.paulc.php_player_wrapper import PHPPlayerWrapper
 from plantation.martin.ai_players.T800 import T800
-from plantation.martin.ai_players.scry_and_die_T800_old import ScryAndDieT800_old
 from plantation.engine import Engine
 import time
 
 
 def main():
-    num_games = 100
+    num_games = 200
 
     # player_a = RandomPlayer(
     #     move_probabilities={
@@ -33,9 +32,9 @@ def main():
     #         'bomb': 1
     #     }, name="CarlRogers")
 
-    player_a = ScryAndDie(name="Vaarsuvius")
-    # player_b = ScryAndDieT800_old(name="Xykon")
-    player_b = T800(name="Arnie")
+    player_b = T800(name="Arnie decisive", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=4)
+    # best parameters so far:
+    player_a = T800(name="Arnie random", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=3)
 
     engine = Engine(
         num_rows=11,
