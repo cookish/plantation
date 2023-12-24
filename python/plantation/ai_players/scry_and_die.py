@@ -161,18 +161,19 @@ class ScryAndDie (Player):
         # pick a random tile empty tile adjacent to a non-zero tile
         if move == 'plant':
             non_zero_tiles = np.argwhere(board != 0)
-            row, col = random.choice(non_zero_tiles)
-            plant_options = []
-            for delta_r, delta_c in [(0, -1), (0, 1), (1, 0), (-1, 0)]:
-                test_row = row + delta_r
-                test_col = col + delta_c
-                if 0 <= test_row < rows and 0 <= test_col < cols:
-                    if board[test_row][test_col] == 0:
-                        plant_options.append([test_row, test_col])
-            if len(plant_options) > 0:
-                return move, random.choice(plant_options)
-            else:
-                move = 'fertilise'  # fall back to this option
+            if len(non_zero_tiles) > 0:
+                row, col = random.choice(non_zero_tiles)
+                plant_options = []
+                for delta_r, delta_c in [(0, -1), (0, 1), (1, 0), (-1, 0)]:
+                    test_row = row + delta_r
+                    test_col = col + delta_c
+                    if 0 <= test_row < rows and 0 <= test_col < cols:
+                        if board[test_row][test_col] == 0:
+                            plant_options.append([test_row, test_col])
+                if len(plant_options) > 0:
+                    return move, random.choice(plant_options)
+                else:
+                    move = 'fertilise'  # fall back to this option
 
         # pick a random non-zero tile to fertilise
         if move == 'fertilise':

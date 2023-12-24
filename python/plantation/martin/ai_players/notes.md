@@ -10,5 +10,5 @@ Additionally making it avoid juicy spray targets increases this to 84%-16%.
 (#7e6d724)
 
 #### 23 Dec
-Making it avoid known opponent tiles for colonising: 51%-48%
+Making it avoid known opponent tiles for colonising: 51%-48% (#888c5e8)
 
