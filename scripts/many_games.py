@@ -32,9 +32,15 @@ def main():
     #         'bomb': 1
     #     }, name="CarlRogers")
 
-    player_b = T800(name="Arnie decisive", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=4)
+    player_b = T800(name="Arnie fertilise", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=3,
+                    relative_colonise_propensity=1,
+                    relative_fertilise_propensity=2,
+                    relative_plant_propensity=18,)
     # best parameters so far:
-    player_a = T800(name="Arnie random", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=3)
+    player_a = T800(name="Arnie plant", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=3,
+                    relative_colonise_propensity=0,
+                    relative_fertilise_propensity=0,
+                    relative_plant_propensity=18,)
 
     engine = Engine(
         num_rows=11,

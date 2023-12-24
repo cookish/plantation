@@ -43,13 +43,19 @@ class T800 (Player):
             name: Optional[str] = None,
             scout_propensity: float = 1,
             initial_turns_of_growth: int = 7,
-            s_curve_factor: float = 3
+            s_curve_factor: float = 3,
+            relative_plant_propensity: float = 5,
+            relative_fertilise_propensity: float = 5,
+            relative_colonise_propensity: float = 1,
 
     ):
         super().__init__(name)
         self.scout_score_normalisation = 5 * 9 * 10 / scout_propensity
         self.initial_turns_of_growth = initial_turns_of_growth
         self.s_curve_factor = s_curve_factor
+        self.relative_plant_propensity = relative_plant_propensity
+        self.relative_fertilise_propensity = relative_fertilise_propensity
+        self.relative_colonise_propensity = relative_colonise_propensity
 
     def start_game(self, board_shape: Tuple[int], sign: int):
         super().start_game(board_shape, sign)
@@ -156,11 +162,11 @@ class T800 (Player):
     ) -> Tuple[str, List[int]]:
         zero_tiles = np.argwhere(board == 0).tolist()
         multi_tiles = np.argwhere(np.abs(board) > 1).tolist()
-        move_probabilities = {'fertilise': 5}
+        move_probabilities = {'fertilise': self.relative_fertilise_propensity}
         if len(zero_tiles) > 0:
-            move_probabilities['plant'] = 5
+            move_probabilities['plant'] = self.relative_plant_propensity
             if moves_remaining > 1 and len(multi_tiles) > 0:
-                move_probabilities['colonise'] = 1
+                move_probabilities['colonise'] = self.relative_colonise_propensity
 
         move = random.choices(
             list(move_probabilities.keys()),
