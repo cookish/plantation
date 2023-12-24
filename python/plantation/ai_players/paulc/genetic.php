@@ -30,7 +30,7 @@ class Genetic
     protected $currentMove = null;
     protected $currentMoveWeight = 0;
 
-    /** @var array[] Negative values when the enemy is there */
+    /** @var array[] POSITIVE values when the enemy is there (forced positive) */
     protected $enemyBoard = [];
     protected $knowledgeDate = [];
     /** @var int[][] Squares until nearest friendly square */
@@ -51,7 +51,7 @@ class Genetic
     protected $moveTypes = ['plant', 'fertilise', 'scout', 'colonise', 'bomb', 'spray'];
 
     const NUM_SPECIES = 10;
-    const GAMES_PER_EVOLVE = 10;
+    const GAMES_PER_EVOLVE = 24;
 
     function __construct($name, $sign) {
         $this->name = $name;
@@ -110,6 +110,7 @@ class Genetic
     }
 
     protected function setEnemyBoard($x, $y, $points, $updateKnowledgeDate = true) {
+        if ($points < 0) $points = - $points; // set positive
         if ($this->enemyBoard[$x][$y] != $points) {
             if ($this->enemyBoard[$x][$y] == 0 || $points == 0) {
                 $this->enemyDistances = []; // reset distances, need to be recalc'ed
@@ -298,22 +299,26 @@ class Genetic
     }
 
     public function generateSprayMoves() {
+        if (empty($this->enemyDistances)) $this->calcEnemyDistances();
         for ($x = 0; $x <= 10; $x++) {
             for ($y = 0; $y <= 10; $y++) {
-                $enemyScore = $this->enemyBoard[$x][$y];
-                if ($x > 0) $enemyScore += $this->enemyBoard[$x-1][$y];
-                if ($x < 10) $enemyScore += $this->enemyBoard[$x+1][$y];
-                if ($y > 0) $enemyScore += $this->enemyBoard[$x][$y-1];
-                if ($y < 10) $enemyScore += $this->enemyBoard[$x][$y+1];
-                if ($enemyScore > 0) {
-                    if (empty($this->friendlyDistances)) $this->calcFriendlyDistances();
-                    $this->proposeMove('spray', [$x, $y],
-                        $this->gene('sprayWeight')
-                            + $enemyScore * $this->gene('sprayEnemyScore')
+                if ($this->enemyDistances[$x][$y] <= 1) {
+                    $enemyCount = 0;
+                    if ($this->enemyBoard[$x][$y]) $enemyCount++;
+                    if ($x > 0 && $this->enemyBoard[$x-1][$y]) $enemyCount++;
+                    if ($x < 10 && $this->enemyBoard[$x+1][$y]) $enemyCount++;
+                    if ($y > 0 && $this->enemyBoard[$x][$y-1]) $enemyCount++;
+                    if ($y < 10 && $this->enemyBoard[$x][$y+1]) $enemyCount++;
+                    if ($enemyCount > 0) {
+                        if (empty($this->friendlyDistances)) $this->calcFriendlyDistances();
+                        $this->proposeMove('spray', [$x, $y],
+                            $this->gene('sprayWeight')
+                            + $enemyCount * $this->gene('sprayEnemyCount')
                             + $this->friendlyDistances[$x][$y] * $this->gene('sprayFriendlyDistance')
-                            + ($this->myStartingColumn == 0 ? $y : 10-$y) * $this->gene('sprayYPositionFromMySide')
-                            + ($this->myStartingColumn == 0 ? 10-$y : $y) * $this->gene('sprayYPositionFromEnemySide')
-                    );
+                            + ($this->myStartingColumn == 0 ? $y : 10 - $y) * $this->gene('sprayYPositionFromMySide')
+                            + ($this->myStartingColumn == 0 ? 10 - $y : $y) * $this->gene('sprayYPositionFromEnemySide')
+                        );
+                    }
                 }
             }
         }
@@ -350,7 +355,7 @@ class Genetic
             case 'colonise':
                 if (substr($result, 0, 9) == 'occupied ') {
                     $enemyScore = substr($result, 9);
-                    $this->setEnemyBoard($pos[0], $pos[1], -1 * abs($enemyScore));
+                    $this->setEnemyBoard($pos[0], $pos[1], $enemyScore);
                 }
                 break;
             case 'fertilise':
@@ -405,7 +410,7 @@ class Genetic
         $scorediff = abs($yourScore) - abs($opponentScore);
         // adjust scorediff down if the player didn't use all moves at least once
         foreach ($this->moveTypes as $move) {
-            if ($this->moveTypeCounts[$move] < 5) {
+            if ($move != 'colonise' && $this->moveTypeCounts[$move] < 5) {
                 $scorediff -= 10 * (5 - $this->moveTypeCounts[$move]);
             }
         }
@@ -439,10 +444,18 @@ class Genetic
                 $this->log("Evolving {$this->name} to generation {$this->lineageJson['generations']}! Top species were $top and $second");
                 $this->lineageJson['species'][0] = $this->lineageJson['species'][$top];
                 $this->lineageJson['species'][1] = $this->lineageJson['species'][$second];
-                for ($i = 1; $i < self::NUM_SPECIES / 2; $i++) {
-                    $this->lineageJson['species'][$i * 2]['genes'] = $this->evolve($this->lineageJson['species'][0]['genes']);
-                    $this->lineageJson['species'][$i * 2 + 1]['genes'] = $this->evolve($this->lineageJson['species'][1]['genes']);
+                // make the third species the average of the first two
+                foreach ($this->lineageJson['species'][2]['genes'] as $gene => $valIgnore) {
+                    $this->lineageJson['species'][2]['genes'][$gene] = ($this->lineageJson['species'][0]['genes'][$gene] + $this->lineageJson['species'][1]['genes'][$gene]) / 2;
                 }
+                // and the rest evolutions of the first two species
+                for ($i = 3; $i <= 6; $i++) {
+                    $this->lineageJson['species'][$i]['genes'] = $this->evolve($this->lineageJson['species'][0]['genes']);
+                }
+                for ($i = 7; $i <= 9; $i++) {
+                    $this->lineageJson['species'][$i]['genes'] = $this->evolve($this->lineageJson['species'][1]['genes']);
+                }
+
                 for ($i = 0; $i < sizeof($this->lineageJson['species']); $i++) {
                     $this->lineageJson['species'][$i]['scorediff'] = 0;
                 }
