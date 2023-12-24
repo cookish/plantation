@@ -20,6 +20,7 @@ optional = true
 jupyter = "^1.0.0"
 ipython = "^8.18.1"
 mypy = "^1.7.1"
+pyright = "^1.1.342"
 
 [tool.poetry.group.experimental]
 optional = true
@@ -30,6 +31,7 @@ jax = {version = "0.4.21", extras = ["cuda12_pip"], source = "google-jax"}
 jaxtyping = "^0.2.24"
 equinox = "^0.11.2"
 optax = "^0.1.7"
+click = "^8.1.7"
 
 [[tool.poetry.source]]
 name = "google-jaxlib"
