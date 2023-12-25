@@ -40,7 +40,7 @@ class ScryAndDie (Player):
 
         first_col = [(r, opp_home_col) for r in [1, 4, 7, 9]]
         random.shuffle(first_col)
-        remaining_board = [(r, c) for c in [1, 3, 6, 9] for r in remaining_cols]
+        remaining_board = [(r, c) for r in [1, 3, 6, 9] for c in remaining_cols]
         random.shuffle(remaining_board)
         self.scry_cycle = cycle(first_col + remaining_board)
 

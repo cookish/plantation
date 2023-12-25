@@ -2,7 +2,6 @@ from plantation.ai_players.random_player import RandomPlayer
 from plantation.ai_players.scry_and_die import ScryAndDie
 from plantation.ai_players.paulc.php_player_wrapper import PHPPlayerWrapper
 from plantation.martin.ai_players.T800 import T800
-from plantation.martin.ai_players.scry_and_die_T800_old import ScryAndDieT800_old
 from plantation.engine import Engine
 
 
