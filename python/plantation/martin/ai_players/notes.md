@@ -14,3 +14,7 @@ Making it avoid known opponent tiles for colonising: 51%-48% (#888c5e8)
 
 #### 26 Dec
 T800: making it pick colonise targets far from existing tiles made it win 61%-34% 
+
+#### 26 Dec
+T800: making it start off prioritising scouting opponent's side of the board, then
+gradually transition to anywhere on the board improves win rate to 51%-42%

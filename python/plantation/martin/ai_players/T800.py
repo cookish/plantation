@@ -27,7 +27,6 @@ def s_curve_probs(probs: List[float], factor: float = 3):
 class T800 (Player):
     opp_board = None
     turn_scouted = None
-    scout_cycle = None
     cross_coords = np.array([
         [-1, 0], [0, -1], [0, 0], [0, 1], [1, 0]
     ])
@@ -113,14 +112,16 @@ class T800 (Player):
     def get_scout_payoff(self, board: np.ndarray, moves_remaining: int, turn: int
                          ) -> Tuple[float, List[List[int]]]:
 
-        # 9 squares in the middle of the board, last scouted 10 turns ago
         rows, cols = board.shape
-        scout_board = np.tile(np.arange(1, cols + 1), (rows, 1))
+        gradient = (101. - turn) / 100.
+        row = np.array([5 + (c - 4) * gradient for c in range(cols)])
+        scout_board = np.tile(row, (rows, 1))
+
         if self.sign < 0:
             # reverse scout_board
             scout_board = scout_board[:, ::-1]
 
-        # if board is not zero, no need to scout
+        # if board is controlled by player, no need to scout
         scout_board = np.where(board == 0, scout_board, 0)
 
         # multiply value by number of turns since scouted
