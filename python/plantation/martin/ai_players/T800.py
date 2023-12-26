@@ -238,8 +238,29 @@ class T800 (Player):
                 combined_board = board + self.opp_board
                 target_options = np.argwhere(np.abs(combined_board) == 0).tolist()
 
-                source_row, source_col = random.choice(multi_tiles)
-                target_row, target_col = random.choice(target_options)
+                # prioritise targets that don't have existing player tiles close by
+                dist_1_kernel = self.scout_kernel
+                dist_2_kernel = np.array(
+                    [[0, 0, 1, 0, 0],
+                     [0, 1, 1, 1, 0],
+                     [1, 1, 1, 1, 1],
+                     [0, 1, 1, 1, 0],
+                     [0, 0, 1, 0, 0],
+                ])
+                score_dist_1 = convolve2d(abs(board), dist_1_kernel,
+                                          mode='same', boundary='fill', fillvalue=0)
+                score_dist_2 = convolve2d(abs(board), dist_2_kernel,
+                                          mode='same', boundary='fill', fillvalue=0)
+                combined_score = score_dist_1 * 10 + score_dist_2
+                best_target_score = np.min([combined_score[*c] for c in target_options])
+                best_target_options = [c for c in target_options if combined_score[*c] == best_target_score]
+
+                source_scores = [abs(board[*c]) % 4 for c in multi_tiles]
+                best_source_score = np.min(source_scores)
+                best_source_options = [c[0] for c in zip(multi_tiles, source_scores) if c[1] == best_source_score]
+
+                source_row, source_col = random.choice(best_source_options)
+                target_row, target_col = random.choice(best_target_options)
                 return move, [target_row, target_col, source_row, source_col]
 
         # there is nowhere we can move...

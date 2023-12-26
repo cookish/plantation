@@ -12,3 +12,5 @@ Additionally making it avoid juicy spray targets increases this to 84%-16%.
 #### 23 Dec
 Making it avoid known opponent tiles for colonising: 51%-48% (#888c5e8)
 
+#### 26 Dec
+T800: making it pick colonise targets far from existing tiles made it win 61%-34% 
