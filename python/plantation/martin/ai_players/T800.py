@@ -161,12 +161,12 @@ class T800 (Player):
     def get_grow(
             self, board: np.ndarray, moves_remaining: int
     ) -> Tuple[str, List[int]]:
-        zero_tiles = np.argwhere(board == 0).tolist()
-        multi_tiles = np.argwhere(np.abs(board) > 1).tolist()
+        # zero_tiles = np.argwhere(board == 0)
+        # multi_tiles = np.argwhere(np.abs(board) > 1)
         move_probabilities = {'fertilise': self.relative_fertilise_propensity}
-        if len(zero_tiles) > 0:
+        if np.any(board == 0):
             move_probabilities['plant'] = self.relative_plant_propensity
-            if moves_remaining > 1 and len(multi_tiles) > 0:
+            if moves_remaining > 1 and np.any(np.abs(board) > 1):
                 move_probabilities['colonise'] = self.relative_colonise_propensity
 
         move = random.choices(
@@ -235,34 +235,36 @@ class T800 (Player):
                 return move, random.choice(filtered_non_zero_tiles)
 
         if move == 'colonise':
-            if len(multi_tiles) > 0 and len(zero_tiles) > 0:
+            multi_tiles = np.argwhere(np.abs(board) > 1)
+            if len(multi_tiles) > 0:
                 combined_board = board + self.opp_board
                 target_options = np.argwhere(np.abs(combined_board) == 0).tolist()
+                if len(target_options) > 0:
 
-                # prioritise targets that don't have existing player tiles close by
-                dist_1_kernel = self.scout_kernel
-                dist_2_kernel = np.array(
-                    [[0, 0, 1, 0, 0],
-                     [0, 1, 1, 1, 0],
-                     [1, 1, 1, 1, 1],
-                     [0, 1, 1, 1, 0],
-                     [0, 0, 1, 0, 0],
-                ])
-                score_dist_1 = convolve2d(abs(board), dist_1_kernel,
-                                          mode='same', boundary='fill', fillvalue=0)
-                score_dist_2 = convolve2d(abs(board), dist_2_kernel,
-                                          mode='same', boundary='fill', fillvalue=0)
-                combined_score = score_dist_1 * 10 + score_dist_2
-                best_target_score = np.min([combined_score[*c] for c in target_options])
-                best_target_options = [c for c in target_options if combined_score[*c] == best_target_score]
+                    # prioritise targets that don't have existing player tiles close by
+                    dist_1_kernel = self.scout_kernel
+                    dist_2_kernel = np.array([
+                        [0, 0, 1, 0, 0],
+                        [0, 1, 1, 1, 0],
+                        [1, 1, 1, 1, 1],
+                        [0, 1, 1, 1, 0],
+                        [0, 0, 1, 0, 0],
+                    ])
+                    score_dist_1 = convolve2d(abs(board), dist_1_kernel,
+                                              mode='same', boundary='fill', fillvalue=0)
+                    score_dist_2 = convolve2d(abs(board), dist_2_kernel,
+                                              mode='same', boundary='fill', fillvalue=0)
+                    combined_score = score_dist_1 * 10 + score_dist_2
+                    best_target_score = np.min([combined_score[*c] for c in target_options])
+                    best_target_options = [c for c in target_options if combined_score[*c] == best_target_score]
 
-                source_scores = [abs(board[*c]) % 4 for c in multi_tiles]
-                best_source_score = np.min(source_scores)
-                best_source_options = [c[0] for c in zip(multi_tiles, source_scores) if c[1] == best_source_score]
+                    source_scores = [abs(board[*c]) % 4 for c in multi_tiles]
+                    best_source_score = np.min(source_scores)
+                    best_source_options = [c[0] for c in zip(multi_tiles, source_scores) if c[1] == best_source_score]
 
-                source_row, source_col = random.choice(best_source_options)
-                target_row, target_col = random.choice(best_target_options)
-                return move, [target_row, target_col, source_row, source_col]
+                    source_row, source_col = random.choice(best_source_options)
+                    target_row, target_col = random.choice(best_target_options)
+                    return move, [target_row, target_col, source_row, source_col]
 
         # there is nowhere we can move...
         return 'scout', [5, 5]

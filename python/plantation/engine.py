@@ -49,23 +49,27 @@ class Engine:
 
         time_p = self.starting_seconds
         time_m = self.starting_seconds
+        time_taken_p = 0
+        time_taken_m = 0
         for self.turn in range(1, self.max_turns+1):
             self.vprint()
             self.vprint("--------------------------------------------------------------")
             self.vprint(f"Turn {self.turn}")
             self.vprint("=========")
-            t = self.run_player_turn(1, player_handler_p, time_p)
-            time_p = time_p - t + self.time_increment
+            t_p = self.run_player_turn(1, player_handler_p, time_p)
+            time_p = time_p - t_p + self.time_increment
             if time_p < 0:
                 break
             self.vprint()
-            t = self.run_player_turn(-1, player_handler_m, time_m)
-            time_m = time_m - t + self.time_increment
+            t_m = self.run_player_turn(-1, player_handler_m, time_m)
+            time_m = time_m - t_m + self.time_increment
             if time_m < 0:
                 break
+            time_taken_p += t_p
+            time_taken_m += t_m
 
         p_score, m_score = self.score_game()
-        self.end_of_game(p_score, m_score, player_handler_p, player_handler_m, time_p, time_m)
+        self.end_of_game(p_score, m_score, player_handler_p, player_handler_m, time_taken_p, time_taken_m)
 
         return p_score + m_score
 
@@ -76,7 +80,7 @@ class Engine:
         self.initialise_board(self.starting_tiles)
         player_handler_m.start_game(self.board.shape, sign=-1)
         player_handler_p.start_game(self.board.shape, sign=1)
-        self.at_start_of_game_action()
+        self.at_start_of_game_action(player_handler_p, player_handler_m)
 
     def end_of_game(
             self,
@@ -99,7 +103,7 @@ class Engine:
         player_handler_p.end_game(p_score, m_score)
 
         self.print_score(p_score, m_score, player_handler_p, player_handler_m)
-        self.at_end_of_game_action()
+        self.at_end_of_game_action(player_handler_p, player_handler_m, time_p, time_m)
 
     def initialise_board(self, starting_tiles: int) -> None:
         self.board = np.zeros((self.num_rows, self.num_cols), dtype=np.byte)
@@ -151,7 +155,7 @@ class Engine:
             time_taken, moves_taken = self.run_player_move(player_handler, time_remaining, moves_remaining, sign)
             total_turn_time += time_taken
             moves_remaining -= moves_taken
-        self.at_end_of_turn_action(sign)
+        self.at_end_of_turn_action(player_handler)
         return total_turn_time
 
     def run_player_move(
@@ -172,7 +176,7 @@ class Engine:
         move_str = f"{move} ({','.join([str(p) for p in pos])})"
         self.vprint(f"{move_str:<20}  |  {result}")
         player_handler.handle_move_result(move, self.turn, pos, result)
-        self.after_move_action(move, pos, sign, moves_remaining, result)
+        self.after_move_action(player_handler, move, pos, moves_remaining, result)
         return time_taken, self.moves_required[move]
 
     def do_fertilise(self, pos: List[int], sign: int) -> str:
@@ -310,23 +314,21 @@ class Engine:
             kwargs['file'] = self.outfile
             print(*args, **kwargs)
 
-    def at_start_of_game_action(self):
+    def at_start_of_game_action(self, player_p: Player, player_m: Player):
         pass
 
     def after_move_action(
             self,
+            player: Player,
             move: str,
             pos: List[int],
-            sign: int,
             moves_remaining: int,
             result: str
     ):
         pass
 
-    def at_end_of_turn_action(self, sign: int):
+    def at_end_of_turn_action(self, player: Player):
         pass
 
-    def at_end_of_game_action(self):
+    def at_end_of_game_action(self, player_p: Player, player_m: Player, time_p: float, time_m: float) -> None:
         pass
-
-

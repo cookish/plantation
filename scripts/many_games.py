@@ -5,11 +5,12 @@ from plantation.ai_players.scry_and_die import ScryAndDie
 from plantation.ai_players.paulc.php_player_wrapper import PHPPlayerWrapper
 from plantation.martin.ai_players.T800 import T800
 from plantation.engine import Engine
+from plantation.martin.timing_engine import TimingEngine
 import time
 
 
 def main():
-    num_games = 200
+    num_games = 100
 
     # player_a = RandomPlayer(
     #     move_probabilities={
@@ -32,17 +33,17 @@ def main():
     #         'bomb': 1
     #     }, name="CarlRogers")
 
-    player_b = T800(name="Arnie fertilise", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=3,
+    player_a = T800(name="Arnie young", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=3,
                     relative_colonise_propensity=1,
-                    relative_fertilise_propensity=2,
-                    relative_plant_propensity=18,)
+                    relative_fertilise_propensity=5,
+                    relative_plant_propensity=10,)
     # best parameters so far:
-    player_a = T800(name="Arnie plant", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=3,
-                    relative_colonise_propensity=0,
-                    relative_fertilise_propensity=0,
-                    relative_plant_propensity=18,)
+    player_b = T800(name="Arnie old", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=3,
+                        relative_colonise_propensity=1,
+                        relative_fertilise_propensity=5,
+                        relative_plant_propensity=10,)
 
-    engine = Engine(
+    engine = TimingEngine(
         num_rows=11,
         num_cols=11,
         max_turns=100,
@@ -112,6 +113,7 @@ def main():
     end_time = time.time()
     duration = end_time - start_time
     print("Seconds:", duration)
+    engine.print_times()
 
 
 if __name__ == '__main__':
