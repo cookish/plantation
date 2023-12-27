@@ -5,7 +5,8 @@ from plantation.ai_players.scry_and_die import ScryAndDie
 from plantation.ai_players.paulc.php_player_wrapper import PHPPlayerWrapper
 from plantation.martin.ai_players.T800 import T800
 from plantation.engine import Engine
-from plantation.martin.timing_engine import TimingEngine
+from plantation.martin.board_stats_engine import BoardStatsEngine
+from plantation.martin.board_stats import BoardStats
 import time
 
 
@@ -39,11 +40,12 @@ def main():
                     relative_plant_propensity=10,)
     # best parameters so far:
     player_b = T800(name="Arnie old", scout_propensity=0.2, initial_turns_of_growth=5, s_curve_factor=3,
-                        relative_colonise_propensity=1,
-                        relative_fertilise_propensity=5,
-                        relative_plant_propensity=10,)
+                    relative_colonise_propensity=1,
+                    relative_fertilise_propensity=5,
+                    relative_plant_propensity=10,)
 
-    engine = TimingEngine(
+    engine = BoardStatsEngine(
+        board_stats=BoardStats(),
         num_rows=11,
         num_cols=11,
         max_turns=100,

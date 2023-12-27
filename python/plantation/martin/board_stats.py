@@ -30,6 +30,9 @@ class BoardStats:
             -1: np.zeros((11, 11, 11), "byte"),
             1: np.zeros((11, 11, 11), "byte")
         }
+        nw = datetime.now()
+        self.out_dir = f'out/{nw}'
+        os.makedirs(self.out_dir)
         self.init_results()
 
         # 0: player board
@@ -113,10 +116,11 @@ class BoardStats:
         opp_board = np.expand_dims(opp_board, axis=-1)
         self.results['opp_board'] = np.concatenate((self.results['opp_board'], opp_board), axis=-1)
 
-    def end_game(self):
-        nw = datetime.now()
-        out_dir = f'out/{nw}'
-        os.makedirs(out_dir)
+    def write_data(self):
         for k, v in self.results.items():
-            np.save(f'{out_dir}/{k}.npy', v)
+            new_data = v
+            if os.path.exists(f'{self.out_dir}/{k}.npy'):
+                old_data = np.load(f'{self.out_dir}/{k}.npy', allow_pickle=True)
+                new_data = np.concatenate((old_data, new_data), axis=-1)
+            np.save(f'{self.out_dir}/{k}.npy', new_data)
         self.init_results()
