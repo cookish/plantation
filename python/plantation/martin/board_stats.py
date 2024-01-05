@@ -27,8 +27,8 @@ class BoardStats:
 
     def __init__(self):
         self.board_info = {
-            -1: np.zeros((11, 11, 11), "byte"),
-            1: np.zeros((11, 11, 11), "byte")
+            -1: np.zeros((11, 11, 11), np.short),
+            1: np.zeros((11, 11, 11), np.short)
         }
         self.init_results()
 
@@ -46,10 +46,10 @@ class BoardStats:
 
     def init_results(self):
         self.results = {
-            'board_info': np.empty((11, 11, 11, 0), dtype=np.byte),
-            'turn': np.empty((0, ), dtype=np.byte),
-            'sign': np.empty((0, ), dtype=np.byte),
-            'opp_board': np.empty((11, 11, 0), dtype=np.byte),
+            'board_info': np.empty((11, 11, 11, 0), dtype=np.short),
+            'turn': np.empty((0, ), dtype=np.short),
+            'sign': np.empty((0, ), dtype=np.short),
+            'opp_board': np.empty((11, 11, 0), dtype=np.short),
         }
 
     def record_move(self, sign: int, move: str, pos: List[int], result: str, turn: int):
