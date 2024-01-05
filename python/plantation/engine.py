@@ -102,7 +102,7 @@ class Engine:
         self.at_end_of_game_action()
 
     def initialise_board(self, starting_tiles: int) -> None:
-        self.board = np.zeros((self.num_rows, self.num_cols), dtype=np.byte)
+        self.board = np.zeros((self.num_rows, self.num_cols), dtype=np.short)
         random_rows = random.sample(range(self.board.shape[0]), starting_tiles)
         self.board[random_rows, 0] = 1
 

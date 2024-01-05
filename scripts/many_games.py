@@ -32,7 +32,8 @@ def main():
     #     }, name="CarlRogers")
 
     player_a = ScryAndDie(name="Vaarsuvius")
-    player_b = ScryAndDie(name="Xykon")
+    #player_b = ScryAndDie(name="Xykon")
+    player_b = PHPPlayerWrapper(name="Crocodilian", php_file='genetic.php')
 
     engine = Engine(
         num_rows=11,

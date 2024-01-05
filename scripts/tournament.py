@@ -17,8 +17,8 @@ def main():
         num_cols=11,
         max_turns=100,
         starting_tiles=3,
-        starting_seconds=1000.0,
-        time_increment=1000
+        starting_seconds=2000.0,
+        time_increment=2000
     )
     engine.output = None
 
@@ -56,14 +56,16 @@ def main():
     for p in players:
         wins[p.name] = []
 
-    num_games = num_games_per_pair * len(players) * len(players)
-    print(f"Running {num_games} games, being {num_games_per_pair} per pair between {len(players)} players, {num_games_per_pair*len(players)} games per player")
+    num_games = num_games_per_pair * len(players) * (len(players) - 1) // 2
+    print(f"Running {num_games} games, being {num_games_per_pair} for each pair, between {len(players)} players, {num_games_per_pair*(len(players)-1)} games for each player")
     print("Running games: [", end="")
     start_time = time.time()
     game = 0
     for iterations in range(num_games_per_pair // 2):
         for p1 in range(len(players)):
             for p2 in range(len(players)):
+                if p1 == p2:
+                    continue; # playing yourself is regrettably hard, as we have just one instance of each player, so the state will collide
                 # print progress bar
                 game = game + 1
                 if game % (num_games // 20) == 0:
@@ -89,7 +91,7 @@ def main():
 
     for p in players:
         win_count = len(wins[p.name])
-        print(f"{p.name} wins: {win_count} ({round(win_count/num_games*100, 2)} %)")
+        print(f"{p.name} wins: {win_count} ({round(win_count/num_games*100, 0)} %)")
     print()
 
     # Calculate and print the duration
